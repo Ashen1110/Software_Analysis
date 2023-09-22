@@ -1,0 +1,10 @@
+-rw-r--r--   1 aburto        652 Dec  7  1995 Makefile
+-rw-r--r--   1 aburto         80 Dec  1  1995 dhry.bat
+-rw-r--r--   1 aburto       4090 Oct  9 07:59 dhry.doc
+-rw-r--r--   1 aburto      16173 Aug  3  1995 dhry.h
+-rw-r--r--   1 aburto      10446 Aug  3  1995 dhry11.c
+-rw-r--r--   1 aburto      11527 Aug  3  1995 dhry21a.c
+-rw-r--r--   1 aburto       5140 Aug  3  1995 dhry21b.c
+-rw-r--r--   1 aburto        366 Oct  9 08:00 dhryrun.doc
+-rw-r--r--   1 aburto          9 Aug  3  1995 input
+-rw-r--r--   1 aburto      10312 Mar  3 09:58 timers_b.c
