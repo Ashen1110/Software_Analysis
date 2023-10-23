@@ -1,0 +1,974 @@
+<html>
+<head>
+<title>Listing of nsieve.c</title>
+</head>
+<body bgcolor="FFFFFF">
+<h4>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;nsieve.c&#160;&#160;&#160;&#160;&#160;&#160;&#160;<font size=-1>coverage:&#160 100.00&#160;%func&#160;&#160;&#160;&#160; 87.69&#160;%block</font></h4>
+<hr size=1 noshade>
+<pre>
+     1) <a name="l1" style="background-color: #ffffff">/****************** Start NSIEVE C Source Code ************************/</a>
+     2) <a name="l2" style="background-color: #ffffff"></a>
+     3) <a name="l3" style="background-color: #ffffff">/****************************************************************/</a>
+     4) <a name="l4" style="background-color: #ffffff">/*                          NSIEVE                              */</a>
+     5) <a name="l5" style="background-color: #ffffff">/*                     C Program Source                         */</a>
+     6) <a name="l6" style="background-color: #ffffff">/*          Sieve benchmark for variable sized arrays           */</a>
+     7) <a name="l7" style="background-color: #ffffff">/*                Version 1.2b, 26 Sep 1992                     */</a>
+     8) <a name="l8" style="background-color: #ffffff">/*              Al Aburto  (aburto@nosc.mil)                    */</a>
+     9) <a name="l9" style="background-color: #ffffff">/*                                                              */</a>
+    10) <a name="l10" style="background-color: #ffffff">/*                                                              */</a>
+    11) <a name="l11" style="background-color: #ffffff">/* This Sieve of Eratosthenes program works with variable size  */</a>
+    12) <a name="l12" style="background-color: #ffffff">/* arrays. It is a straight forward extension of the original   */</a>
+    13) <a name="l13" style="background-color: #ffffff">/* Gilbreath version ( Gilbreath, Jim. &quot;A High-Level Language   */</a>
+    14) <a name="l14" style="background-color: #ffffff">/* Benchmark.&quot; BYTE, September 1981, p. 180, and also Gilbreath,*/ </a>
+    15) <a name="l15" style="background-color: #ffffff">/* Jim and Gary. &quot;Eratosthenes Revisited: Once More Through the */</a>
+    16) <a name="l16" style="background-color: #ffffff">/* Sieve.&quot; BYTE January 1983, p. 283 ). Unlike the Sieve of     */</a>
+    17) <a name="l17" style="background-color: #ffffff">/* Gilbreath, NSIEVE uses register long variables, pointers,and */ </a>
+    18) <a name="l18" style="background-color: #ffffff">/* large byte arrays via 'malloc()'.  Maximum array size is     */</a>
+    19) <a name="l19" style="background-color: #ffffff">/* currently set at 2.56 MBytes but this can be increased or    */</a>
+    20) <a name="l20" style="background-color: #ffffff">/* decreased by changing the program LIMIT constant.  NSIEVE    */</a>
+    21) <a name="l21" style="background-color: #ffffff">/* provides error checking to ensure correct operation.  Timer  */</a>
+    22) <a name="l22" style="background-color: #ffffff">/* routines are provided for several different systems. NSIEVE  */</a>
+    23) <a name="l23" style="background-color: #ffffff">/* results won't generally agree with the Gilbreath Sieve       */</a>
+    24) <a name="l24" style="background-color: #ffffff">/* results because NSIEVE specifically uses register long       */</a>
+    25) <a name="l25" style="background-color: #ffffff">/* variables. NSIEVE, and Sieve, are programs designed          */</a>
+    26) <a name="l26" style="background-color: #ffffff">/* specifically to generate and printout prime numbers (positive*/ </a>
+    27) <a name="l27" style="background-color: #ffffff">/* integers which have no other integral factor other than      */</a>
+    28) <a name="l28" style="background-color: #ffffff">/* itself and unity, as 2,3,5,7,11, ... ). NSIEVE does not      */</a>
+    29) <a name="l29" style="background-color: #ffffff">/* conduct the 'typical' instructions one might expect from the */</a>
+    30) <a name="l30" style="background-color: #ffffff">/* mythical 'typical program'. NSIEVE results can be used to    */</a>
+    31) <a name="l31" style="background-color: #ffffff">/* gain a perspective into the relative performance of different*/</a>
+    32) <a name="l32" style="background-color: #ffffff">/* computer systems, but they can not be used in isolation to   */</a>
+    33) <a name="l33" style="background-color: #ffffff">/* categorize the general performance capabilities of any       */</a>
+    34) <a name="l34" style="background-color: #ffffff">/* computer system (no single benchmark program currently can do*/</a>
+    35) <a name="l35" style="background-color: #ffffff">/* this).                                                       */</a>
+    36) <a name="l36" style="background-color: #ffffff">/*                                                              */</a>
+    37) <a name="l37" style="background-color: #ffffff">/* The program uses a maximum array size of 2.56 MBytes. You can*/</a>
+    38) <a name="l38" style="background-color: #ffffff">/* increase or lower this value by changing the 'LIMIT' define  */</a>
+    39) <a name="l39" style="background-color: #ffffff">/* from 9 to a higher or lower value.  Some systems (IBM PC's   */</a>
+    40) <a name="l40" style="background-color: #ffffff">/* and clones) will be unable to work beyond 'LIMIT = 3' which  */</a>
+    41) <a name="l41" style="background-color: #ffffff">/* corresponds to an array size of only 40,000 bytes. Be careful*/</a>
+    42) <a name="l42" style="background-color: #ffffff">/* when specifying LIMIT &gt; 3 for these systems as the system may*/ </a>
+    43) <a name="l43" style="background-color: #ffffff">/* crash or hang-up. Normally NSIEVE will stop program execution*/  </a>
+    44) <a name="l44" style="background-color: #ffffff">/* when 'malloc()' fails.                                       */</a>
+    45) <a name="l45" style="background-color: #ffffff">/*                                                              */</a>
+    46) <a name="l46" style="background-color: #ffffff">/* The maximum array size is given by:                          */</a>
+    47) <a name="l47" style="background-color: #ffffff">/*              size = 5000 * ( 2 ** LIMIT ).                   */</a>
+    48) <a name="l48" style="background-color: #ffffff">/*                                                              */</a>
+    49) <a name="l49" style="background-color: #ffffff">/* The array 'Number_Of_Primes[LIMIT]' is intended to hold the  */</a>
+    50) <a name="l50" style="background-color: #ffffff">/* correct number of primes found for each array size up to     */</a>
+    51) <a name="l51" style="background-color: #ffffff">/* LIMIT = 20, but the array is only currently defined up to    */</a>
+    52) <a name="l52" style="background-color: #ffffff">/* LIMIT = 13.                                                  */</a>
+    53) <a name="l53" style="background-color: #ffffff">/*                                                              */</a>
+    54) <a name="l54" style="background-color: #ffffff">/* Program outputs to check for correct operation:              */</a>
+    55) <a name="l55" style="background-color: #ffffff">/*    Array Size  LIMIT    Primes Found      Last Prime         */</a>
+    56) <a name="l56" style="background-color: #ffffff">/*     (Bytes)                                                  */</a>
+    57) <a name="l57" style="background-color: #ffffff">/*         8191       0            1899           16381         */</a>
+    58) <a name="l58" style="background-color: #ffffff">/*        10000       1            2261           19997         */</a>
+    59) <a name="l59" style="background-color: #ffffff">/*        20000       2            4202           39989         */</a>
+    60) <a name="l60" style="background-color: #ffffff">/*        40000       3            7836           79999         */</a>
+    61) <a name="l61" style="background-color: #ffffff">/*        80000       4           14683          160001         */</a>
+    62) <a name="l62" style="background-color: #ffffff">/*       160000       5           27607          319993         */</a>
+    63) <a name="l63" style="background-color: #ffffff">/*       320000       6           52073          639997         */</a>
+    64) <a name="l64" style="background-color: #ffffff">/*       640000       7           98609         1279997         */</a>
+    65) <a name="l65" style="background-color: #ffffff">/*      1280000       8          187133         2559989         */</a>
+    66) <a name="l66" style="background-color: #ffffff">/*      2560000       9          356243         5119997         */</a>
+    67) <a name="l67" style="background-color: #ffffff">/*      5120000      10          679460        10239989         */</a>
+    68) <a name="l68" style="background-color: #ffffff">/*     10240000      11         1299068        20479999         */</a>
+    69) <a name="l69" style="background-color: #ffffff">/*     20480000      12         2488465        40960001         */</a>
+    70) <a name="l70" style="background-color: #ffffff">/*     40960000      13         4774994        81919993         */</a>
+    71) <a name="l71" style="background-color: #ffffff">/*     81920000      14         -------       ---------         */</a>
+    72) <a name="l72" style="background-color: #ffffff">/****************************************************************/</a>
+    73) <a name="l73" style="background-color: #ffffff"></a>
+    74) <a name="l74" style="background-color: #ffffff">/****************************************************/</a>
+    75) <a name="l75" style="background-color: #ffffff">/* Example Compilation:                             */</a>
+    76) <a name="l76" style="background-color: #ffffff">/* (1) UNIX Systems:                                */</a>
+    77) <a name="l77" style="background-color: #ffffff">/*     cc -O -DUNIX nsieve.c -o nsieve              */</a>
+    78) <a name="l78" style="background-color: #ffffff">/*     cc -DUNIX nsieve.c -o nsieve                 */</a>
+    79) <a name="l79" style="background-color: #ffffff">/****************************************************/</a>
+    80) <a name="l80" style="background-color: #ffffff"></a>
+    81) <a name="l81" style="background-color: #ffffff">/***************************************************************/</a>
+    82) <a name="l82" style="background-color: #ffffff">/* Timer options. You MUST uncomment one of the options below  */</a>
+    83) <a name="l83" style="background-color: #ffffff">/* or compile, for example, with the '-DUNIX' option.          */</a>
+    84) <a name="l84" style="background-color: #ffffff">/***************************************************************/</a>
+    85) <a name="l85" style="background-color: #ffffff">/* #define Amiga       */</a>
+    86) <a name="l86" style="background-color: #ffffff">/* #define UNIX        */</a>
+    87) <a name="l87" style="background-color: #ffffff">/* #define UNIX_Old    */</a>
+    88) <a name="l88" style="background-color: #ffffff">/* #define VMS         */</a>
+    89) <a name="l89" style="background-color: #ffffff">/* #define BORLAND_C   */</a>
+    90) <a name="l90" style="background-color: #ffffff">/* #define MSC         */</a>
+    91) <a name="l91" style="background-color: #ffffff">/* #define MAC         */</a>
+    92) <a name="l92" style="background-color: #ffffff">/* #define IPSC        */</a>
+    93) <a name="l93" style="background-color: #ffffff">/* #define FORTRAN_SEC */</a>
+    94) <a name="l94" style="background-color: #ffffff">/* #define GTODay      */</a>
+    95) <a name="l95" style="background-color: #ffffff">/* #define CTimer      */</a>
+    96) <a name="l96" style="background-color: #ffffff">/* #define UXPM        */</a>
+    97) <a name="l97" style="background-color: #ffffff">/* #define MAC_TMgr    */</a>
+    98) <a name="l98" style="background-color: #ffffff">/* #define PARIX       */</a>
+    99) <a name="l99" style="background-color: #ffffff">/* #define POSIX       */</a>
+   100) <a name="l100" style="background-color: #ffffff">/* #define WIN32       */</a>
+   101) <a name="l101" style="background-color: #ffffff">/* #define POSIX1      */</a>
+   102) <a name="l102" style="background-color: #ffffff">/***********************/</a>
+   103) <a name="l103" style="background-color: #ffffff"></a>
+   104) <a name="l104" style="background-color: #ffffff">#include &lt;stdio.h&gt;</a>
+   105) <a name="l105" style="background-color: #ffffff">#ifndef vax</a>
+   106) <a name="l106" style="background-color: #ffffff">#include &lt;stdlib.h&gt;</a>
+   107) <a name="l107" style="background-color: #ffffff">#endif</a>
+   108) <a name="l108" style="background-color: #ffffff">#include &lt;math.h&gt;</a>
+   109) <a name="l109" style="background-color: #ffffff">		    /***********************************************/</a>
+   110) <a name="l110" style="background-color: #ffffff">#define LIMIT 13    /* You may need to change this to '3' for PC's */</a>
+   111) <a name="l111" style="background-color: #ffffff">		    /* and Clones or you can experiment with higher*/</a>
+   112) <a name="l112" style="background-color: #ffffff">		    /* values, but '13' is currently the max.      */</a>
+   113) <a name="l113" style="background-color: #ffffff">		    /***********************************************/</a>
+   114) <a name="l114" style="background-color: #ffffff"></a>
+   115) <a name="l115" style="background-color: #ffffff">#ifdef Amiga</a>
+   116) <a name="l116" style="background-color: #ffffff">#include &lt;exec/types.h&gt;</a>
+   117) <a name="l117" style="background-color: #ffffff">#include &lt;ctype.h&gt;</a>
+   118) <a name="l118" style="background-color: #ffffff">#endif</a>
+   119) <a name="l119" style="background-color: #ffffff"></a>
+   120) <a name="l120" style="background-color: #ffffff">#ifdef BORLAND_C</a>
+   121) <a name="l121" style="background-color: #ffffff">#include &lt;ctype.h&gt;</a>
+   122) <a name="l122" style="background-color: #ffffff">#include &lt;dos.h&gt;</a>
+   123) <a name="l123" style="background-color: #ffffff">#endif</a>
+   124) <a name="l124" style="background-color: #ffffff"></a>
+   125) <a name="l125" style="background-color: #ffffff">#ifdef MSC</a>
+   126) <a name="l126" style="background-color: #ffffff">#include &lt;ctype.h&gt;</a>
+   127) <a name="l127" style="background-color: #ffffff">#endif</a>
+   128) <a name="l128" style="background-color: #ffffff"></a>
+   129) <a name="l129" style="background-color: #ffffff">#ifndef TRUE</a>
+   130) <a name="l130" style="background-color: #ffffff">#define TRUE 1</a>
+   131) <a name="l131" style="background-color: #ffffff">#define FALSE 0</a>
+   132) <a name="l132" style="background-color: #ffffff">#endif</a>
+   133) <a name="l133" style="background-color: #ffffff"></a>
+   134) <a name="l134" style="background-color: #ffffff">double nulltime,runtime,TimeArray[4];</a>
+   135) <a name="l135" style="background-color: #ffffff">double reftime,adj_time,emips;</a>
+   136) <a name="l136" style="background-color: #ffffff">double hmips,lmips,smips[21];</a>
+   137) <a name="l137" style="background-color: #ffffff"></a>
+   138) <a name="l138" style="background-color: #ffffff">long L_Prime,N_Prime;      /* Last Prime and Number of Primes Found */</a>
+   139) <a name="l139" style="background-color: #ffffff">long ErrorFlag;</a>
+   140) <a name="l140" style="background-color: #ffffff"></a>
+   141) <a name="l141" style="background-color: #ffffff">long Number_Of_Primes[21]; /* List of Correct Number of Primes for */</a>
+   142) <a name="l142" style="background-color: #ffffff">			  /* each sieve array size.               */</a>
+   143) <a name="l143" style="background-color: #ffffff"></a>
+   144) <a name="l144" style="background-color: #ffffff">long NLoops[21];</a>
+   145) <a name="l145" style="background-color: #ffffff"></a>
+   146) <a name="l146" style="background-color: #ffffff"></a>
+   147) <a name="l147" style="background-color: #ffffff">int SIEVE(long, long, long);</a>
+   148) <a name="l148" style="background-color: #ffffff">int dtime(double*);</a>
+   149) <a name="l149" style="background-color: #ffffff"></a>
+   150) <a name="l150" style="background-color: #ffffff"></a>
+   151) <a name="l151" style="background-color: #ffffff">void main()</a>
+        <a style="background-color: #ffffff">     ^ 1 </a>
+   152) <a name="l152" style="background-color: #ffffff">{</a>
+   153) <a name="l153" style="background-color: #ffffff"></a>
+   154) <a name="l154" style="background-color: #ffffff">long  i,j,k,p;</a>
+   155) <a name="l155" style="background-color: #ffffff">double sumtime;</a>
+   156) <a name="l156" style="background-color: #ffffff"></a>
+   157) <a name="l157" style="background-color: #ffffff"></a>
+   158) <a name="l158" style="background-color: #ffffff">printf(&quot;\n   Sieve of Eratosthenes (Scaled to 10 Iterations)\n&quot;);</a>
+   159) <a name="l159" style="background-color: #ffffff">printf(&quot;   Version 1.2b, 26 Sep 1992\n\n&quot;);</a>
+        <a style="background-color: #ffffff">^ 1 </a>
+   160) <a name="l160" style="background-color: #ffffff">printf(&quot;   Array Size   Number   Last Prime     Linear&quot;);       </a>
+        <a style="background-color: #ffffff">^ 1 </a>
+   161) <a name="l161" style="background-color: #ffffff">printf(&quot;    RunTime    MIPS\n&quot;);</a>
+        <a style="background-color: #ffffff">^ 1 </a>
+   162) <a name="l162" style="background-color: #ffffff">printf(&quot;    (Bytes)   of Primes               Time(sec)&quot;);      </a>
+        <a style="background-color: #ffffff">^ 1 </a>
+   163) <a name="l163" style="background-color: #ffffff">printf(&quot;    (Sec)\n&quot;);</a>
+        <a style="background-color: #ffffff">^ 1 </a>
+   164) <a name="l164" style="background-color: #ffffff"></a>
+   165) <a name="l165" style="background-color: #ffffff">       </a>
+   166) <a name="l166" style="background-color: #ffffff">		   /*******************************/</a>
+   167) <a name="l167" style="background-color: #ffffff">		   /* Number of        Array Size */</a>
+   168) <a name="l168" style="background-color: #ffffff">		   /* Primes Found      (Bytes)   */</a>
+   169) <a name="l169" style="background-color: #ffffff">Number_Of_Primes[0] =     1899;      /*       8191 */</a>
+        <a style="background-color: #ffffff">^ 1 </a>
+   170) <a name="l170" style="background-color: #ffffff">Number_Of_Primes[1] =     2261;      /*      10000 */</a>
+   171) <a name="l171" style="background-color: #ffffff">Number_Of_Primes[2] =     4202;      /*      20000 */</a>
+   172) <a name="l172" style="background-color: #ffffff">Number_Of_Primes[3] =     7836;      /*      40000 */</a>
+   173) <a name="l173" style="background-color: #ffffff">Number_Of_Primes[4] =    14683;      /*      80000 */</a>
+   174) <a name="l174" style="background-color: #ffffff">Number_Of_Primes[5] =    27607;      /*     160000 */</a>
+   175) <a name="l175" style="background-color: #ffffff">Number_Of_Primes[6] =    52073;      /*     320000 */</a>
+   176) <a name="l176" style="background-color: #ffffff">Number_Of_Primes[7] =    98609;      /*     640000 */</a>
+   177) <a name="l177" style="background-color: #ffffff">Number_Of_Primes[8] =   187133;      /*    1280000 */</a>
+   178) <a name="l178" style="background-color: #ffffff">Number_Of_Primes[9] =   356243;      /*    2560000 */</a>
+   179) <a name="l179" style="background-color: #ffffff">Number_Of_Primes[10]=   679460;      /*    5120000 */</a>
+   180) <a name="l180" style="background-color: #ffffff">Number_Of_Primes[11]=  1299068;      /*   10240000 */</a>
+   181) <a name="l181" style="background-color: #ffffff">Number_Of_Primes[12]=  2488465;      /*   20480000 */</a>
+   182) <a name="l182" style="background-color: #ffffff">Number_Of_Primes[13]=  4774994;      /*   40960000 */</a>
+   183) <a name="l183" style="background-color: #ffffff">Number_Of_Primes[14]=        0;      /*   81920000 */</a>
+   184) <a name="l184" style="background-color: #ffffff">Number_Of_Primes[15]=        0;      /*  163840000 */</a>
+   185) <a name="l185" style="background-color: #ffffff"></a>
+   186) <a name="l186" style="background-color: #ffffff">j = 8191;</a>
+   187) <a name="l187" style="background-color: #ffffff">k = 256;</a>
+   188) <a name="l188" style="background-color: #ffffff">p = 0;</a>
+   189) <a name="l189" style="background-color: #ffffff">SIEVE(j,k,p);</a>
+   190) <a name="l190" style="background-color: #ffffff"></a>
+   191) <a name="l191" style="background-color: #ffffff">for( i=1 ; i&lt;= 20 ; i++)</a>
+        <a style="background-color: #ffffff">     ^ 1   ^ 21 (2)</a>
+   192) <a name="l192" style="background-color: #ffffff">{</a>
+   193) <a name="l193" style="background-color: #ffffff"> NLoops[i] = 1;</a>
+   194) <a name="l194" style="background-color: #ffffff">}</a>
+   195) <a name="l195" style="background-color: #ffffff"></a>
+   196) <a name="l196" style="background-color: #ffffff">p = 8;</a>
+        <a style="background-color: #ffffff">^ 1 </a>
+   197) <a name="l197" style="background-color: #ffffff">if ( runtime &gt; 0.125 ) </a><a style="background-color: #ffff99">p = 1;</a>
+        <a style="background-color: #ffffff">                       ^ 0 </a>
+   198) <a name="l198" style="background-color: #ffff99"></a>
+   199) <a name="l199" style="background-color: #ffffff">NLoops[0] = 256 * p; </a>
+        <a style="background-color: #ffffff">^ 1 </a>
+   200) <a name="l200" style="background-color: #ffffff">NLoops[1] = 256 * p; </a>
+   201) <a name="l201" style="background-color: #ffffff">NLoops[2] = 128 * p;</a>
+   202) <a name="l202" style="background-color: #ffffff">NLoops[3] =  64 * p;</a>
+   203) <a name="l203" style="background-color: #ffffff">NLoops[4] =  32 * p;</a>
+   204) <a name="l204" style="background-color: #ffffff">NLoops[5] =  16 * p;</a>
+   205) <a name="l205" style="background-color: #ffffff">NLoops[6] =   8 * p;</a>
+   206) <a name="l206" style="background-color: #ffffff">NLoops[7] =   4 * p;</a>
+   207) <a name="l207" style="background-color: #ffffff">NLoops[8] =   2 * p;</a>
+   208) <a name="l208" style="background-color: #ffffff">NLoops[9] =       p;</a>
+   209) <a name="l209" style="background-color: #ffffff">NLoops[10] =  p / 2;</a>
+   210) <a name="l210" style="background-color: #ffffff">NLoops[11] =  p / 4;</a>
+   211) <a name="l211" style="background-color: #ffffff"></a>
+   212) <a name="l212" style="background-color: #ffffff">if ( p == 1 )</a>
+   213) <a name="l213" style="background-color: #ffffff">{</a>
+   214) <a name="l214" style="background-color: #ffff99">NLoops[10] = 1;</a>
+        <a style="background-color: #ffffff">^ 0 </a>
+   215) <a name="l215" style="background-color: #ffff99">NLoops[11] = 1;</a>
+   216) <a name="l216" style="background-color: #ffff99">}</a>
+   217) <a name="l217" style="background-color: #ffff99"></a>
+   218) <a name="l218" style="background-color: #ffffff">sumtime = 0.0;</a>
+        <a style="background-color: #ffffff">^ 1 </a>
+   219) <a name="l219" style="background-color: #ffffff">i = 0;</a>
+   220) <a name="l220" style="background-color: #ffffff">j = 8191;</a>
+   221) <a name="l221" style="background-color: #ffffff">k = NLoops[0];</a>
+   222) <a name="l222" style="background-color: #ffffff">SIEVE(j,k,p);</a>
+   223) <a name="l223" style="background-color: #ffffff">sumtime = sumtime + runtime;</a>
+        <a style="background-color: #ffffff">^ 1 </a>
+   224) <a name="l224" style="background-color: #ffffff">smips[i] = emips;</a>
+   225) <a name="l225" style="background-color: #ffffff"></a>
+   226) <a name="l226" style="background-color: #ffffff">j = 5000;</a>
+   227) <a name="l227" style="background-color: #ffffff">ErrorFlag = 0;</a>
+   228) <a name="l228" style="background-color: #ffffff"></a>
+   229) <a name="l229" style="background-color: #ffffff">for( i=1 ; i&lt;= LIMIT ; i++)</a>
+        <a style="background-color: #ffffff">           ^ 14 (2)</a>
+   230) <a name="l230" style="background-color: #ffffff">{</a>
+   231) <a name="l231" style="background-color: #ffffff">   j = 2 * j;</a>
+        <a style="background-color: #ffffff">   ^ 13 </a>
+   232) <a name="l232" style="background-color: #ffffff"></a>
+   233) <a name="l233" style="background-color: #ffffff">   k = NLoops[i];</a>
+   234) <a name="l234" style="background-color: #ffffff"></a>
+   235) <a name="l235" style="background-color: #ffffff">   SIEVE(j,k,p);</a>
+   236) <a name="l236" style="background-color: #ffffff">   smips[i] = emips;</a>
+        <a style="background-color: #ffffff">   ^ 13 </a>
+   237) <a name="l237" style="background-color: #ffffff"></a>
+   238) <a name="l238" style="background-color: #ffffff">   if( ErrorFlag == 0L )</a>
+   239) <a name="l239" style="background-color: #ffffff">   {</a>
+   240) <a name="l240" style="background-color: #ffffff">   if( N_Prime != Number_Of_Primes[i] )</a>
+        <a style="background-color: #ffffff">       ^ 13 </a>
+   241) <a name="l241" style="background-color: #ffffff">   {</a>
+   242) <a name="l242" style="background-color: #ffff99">   printf(&quot;\n   Error --- Incorrect Number of Primes for Array: %ld\n&quot;,j);</a>
+        <a style="background-color: #ffffff">   ^ 0 </a>
+   243) <a name="l243" style="background-color: #ffff99">   printf(&quot;   Number of  Primes  Found is: %ld\n&quot;,N_Prime);</a>
+        <a style="background-color: #ffffff">   ^ 0 </a>
+   244) <a name="l244" style="background-color: #ffff99">   printf(&quot;   Correct Number of Primes is: %ld\n&quot;,Number_Of_Primes[i]);</a>
+        <a style="background-color: #ffffff">   ^ 0 </a>
+   245) <a name="l245" style="background-color: #ffff99">   ErrorFlag = 1L;</a>
+        <a style="background-color: #ffffff">   ^ 0 </a>
+   246) <a name="l246" style="background-color: #ffff99">   }</a>
+   247) <a name="l247" style="background-color: #ffff99">   }</a>
+   248) <a name="l248" style="background-color: #ffff99"></a>
+   249) <a name="l249" style="background-color: #ffff99">   if( </a><a style="background-color: #ffffff">ErrorFlag &gt; 0L ) break;</a>
+        <a style="background-color: #ffffff">       ^ 13 </a>
+   250) <a name="l250" style="background-color: #ffffff"></a>
+   251) <a name="l251" style="background-color: #ffffff">   sumtime = sumtime + runtime * ( 8191.0 / (double)j );</a>
+   252) <a name="l252" style="background-color: #ffffff"></a>
+   253) <a name="l253" style="background-color: #ffffff">}</a>
+   254) <a name="l254" style="background-color: #ffffff"></a>
+   255) <a name="l255" style="background-color: #ffffff">if( ErrorFlag == 2L )</a>
+        <a style="background-color: #ffffff">    ^ 1 </a>
+   256) <a name="l256" style="background-color: #ffffff">{</a>
+   257) <a name="l257" style="background-color: #ffff99">printf(&quot;\n   Could Not Allocate Memory for Array Size: %ld\n&quot;,j);</a>
+        <a style="background-color: #ffffff">^ 0 </a>
+   258) <a name="l258" style="background-color: #ffff99">}</a>
+   259) <a name="l259" style="background-color: #ffff99"></a>
+   260) <a name="l260" style="background-color: #ffffff">sumtime = sumtime / (double)i;</a>
+        <a style="background-color: #ffffff">^ 1 </a>
+   261) <a name="l261" style="background-color: #ffffff"></a>
+   262) <a name="l262" style="background-color: #ffffff">hmips = 0.0;</a>
+   263) <a name="l263" style="background-color: #ffffff">lmips = 1.0e+06;</a>
+   264) <a name="l264" style="background-color: #ffffff">for( k=0 ; k &lt; i ; k++)</a>
+        <a style="background-color: #ffffff">           ^ 15 (2)</a>
+   265) <a name="l265" style="background-color: #ffffff">{</a>
+   266) <a name="l266" style="background-color: #ffffff">if( smips[k] &gt; hmips ) hmips = smips[k];</a>
+   267) <a name="l267" style="background-color: #ffffff">if( smips[k] &lt; lmips ) lmips = smips[k];</a>
+   268) <a name="l268" style="background-color: #ffffff">}</a>
+   269) <a name="l269" style="background-color: #ffffff"></a>
+   270) <a name="l270" style="background-color: #ffffff">printf(&quot;\n   Relative to 10 Iterations and the 8191 Array Size:\n&quot;);</a>
+        <a style="background-color: #ffffff">^ 1 </a>
+   271) <a name="l271" style="background-color: #ffffff">printf(&quot;   Average RunTime = %8.3f (sec)\n&quot;,sumtime);</a>
+        <a style="background-color: #ffffff">^ 1 </a>
+   272) <a name="l272" style="background-color: #ffffff">printf(&quot;   High  MIPS      = %8.1f\n&quot;,hmips);</a>
+        <a style="background-color: #ffffff">^ 1 </a>
+   273) <a name="l273" style="background-color: #ffffff">printf(&quot;   Low   MIPS      = %8.1f\n\n&quot;,lmips);</a>
+        <a style="background-color: #ffffff">^ 1 </a>
+   274) <a name="l274" style="background-color: #ffffff"></a>
+   275) <a name="l275" style="background-color: #ffffff">}</a>
+        <a style="background-color: #ffffff">^ 1 </a>
+   276) <a name="l276" style="background-color: #ffffff"></a>
+   277) <a name="l277" style="background-color: #ffffff"></a>
+   278) <a name="l278" style="background-color: #ffffff">/**************************************/</a>
+   279) <a name="l279" style="background-color: #ffffff">/*  Sieve of Erathosthenes Program    */</a>
+   280) <a name="l280" style="background-color: #ffffff">/**************************************/</a>
+   281) <a name="l281" style="background-color: #ffffff"></a>
+   282) <a name="l282" style="background-color: #ffffff">int SIEVE(m,n,p)</a>
+        <a style="background-color: #ffffff">    ^ 15 </a>
+   283) <a name="l283" style="background-color: #ffffff">long m,n,p;</a>
+   284) <a name="l284" style="background-color: #ffffff">{</a>
+   285) <a name="l285" style="background-color: #ffffff"></a>
+   286) <a name="l286" style="background-color: #ffffff">register char *flags;</a>
+   287) <a name="l287" style="background-color: #ffffff">register long i,prime,k,ci;</a>
+   288) <a name="l288" style="background-color: #ffffff">register long count,size;</a>
+   289) <a name="l289" style="background-color: #ffffff"></a>
+   290) <a name="l290" style="background-color: #ffffff">long  iter,j;</a>
+   291) <a name="l291" style="background-color: #ffffff"></a>
+   292) <a name="l292" style="background-color: #ffffff">char *ptr;</a>
+   293) <a name="l293" style="background-color: #ffffff"></a>
+   294) <a name="l294" style="background-color: #ffffff">#ifdef vax</a>
+   295) <a name="l295" style="background-color: #ffffff">char *malloc();</a>
+   296) <a name="l296" style="background-color: #ffffff">int   free(); </a>
+   297) <a name="l297" style="background-color: #ffffff">#endif</a>
+   298) <a name="l298" style="background-color: #ffffff"></a>
+   299) <a name="l299" style="background-color: #ffffff">size  = m - 1;</a>
+   300) <a name="l300" style="background-color: #ffffff">ptr   = malloc(m);</a>
+        <a style="background-color: #ffffff">^ 15 </a>
+   301) <a name="l301" style="background-color: #ffffff"></a>
+   302) <a name="l302" style="background-color: #ffffff">   ErrorFlag = 0L;</a>
+   303) <a name="l303" style="background-color: #ffffff">   N_Prime   = 0L;</a>
+   304) <a name="l304" style="background-color: #ffffff">   L_Prime   = 0L;</a>
+   305) <a name="l305" style="background-color: #ffffff"></a>
+   306) <a name="l306" style="background-color: #ffffff">   if( !ptr )</a>
+   307) <a name="l307" style="background-color: #ffffff">     {</a>
+   308) <a name="l308" style="background-color: #ffff99">     ErrorFlag = 2L;</a>
+        <a style="background-color: #ffffff">     ^ 0 </a>
+   309) <a name="l309" style="background-color: #ffff99">     return 0;</a>
+   310) <a name="l310" style="background-color: #ffff99">     }</a>
+   311) <a name="l311" style="background-color: #ffff99"></a>
+   312) <a name="l312" style="background-color: #ffffff">   flags = ptr;</a>
+        <a style="background-color: #ffffff">   ^ 15 </a>
+   313) <a name="l313" style="background-color: #ffffff"></a>
+   314) <a name="l314" style="background-color: #ffffff">   dtime(TimeArray);</a>
+   315) <a name="l315" style="background-color: #ffffff">   dtime(TimeArray);</a>
+        <a style="background-color: #ffffff">   ^ 15 </a>
+   316) <a name="l316" style="background-color: #ffffff">   nulltime = TimeArray[1];</a>
+        <a style="background-color: #ffffff">   ^ 15 </a>
+   317) <a name="l317" style="background-color: #ffffff">   if ( nulltime &lt; 0.0 ) nulltime = 0.0;</a>
+   318) <a name="l318" style="background-color: #ffffff"></a>
+   319) <a name="l319" style="background-color: #ffffff">   j = 0;</a>
+   320) <a name="l320" style="background-color: #ffffff">						  /****************/</a>
+   321) <a name="l321" style="background-color: #ffffff">						  /* Instructions */</a>
+   322) <a name="l322" style="background-color: #ffffff">						  /*    *iter     */</a>
+   323) <a name="l323" style="background-color: #ffffff">						  /****************/</a>
+   324) <a name="l324" style="background-color: #ffffff">   dtime(TimeArray);</a>
+   325) <a name="l325" style="background-color: #ffffff">   for(iter=1 ; iter&lt;=n ; iter++)                    </a>
+        <a style="background-color: #ffffff">       ^ 15     ^ 6,415 (2)</a>
+   326) <a name="l326" style="background-color: #ffffff">   {</a>
+   327) <a name="l327" style="background-color: #ffffff">   count = 0;                                       </a>
+        <a style="background-color: #ffffff">   ^ 6,400 </a>
+   328) <a name="l328" style="background-color: #ffffff"></a>
+   329) <a name="l329" style="background-color: #ffffff">   for(i=0 ; i&lt;=size ; i++)                      </a>
+        <a style="background-color: #ffffff">             ^ 305,598,464 (2)</a>
+   330) <a name="l330" style="background-color: #ffffff">   {</a>
+   331) <a name="l331" style="background-color: #ffffff">   *(flags+i) = TRUE;                                /* 1*size  */</a>
+   332) <a name="l332" style="background-color: #ffffff">   }                                                 /* 3*size  */</a>
+   333) <a name="l333" style="background-color: #ffffff">						   </a>
+   334) <a name="l334" style="background-color: #ffffff">   ci = 0;                                         </a>
+        <a style="background-color: #ffffff">   ^ 6,400 </a>
+   335) <a name="l335" style="background-color: #ffffff">     for(i=0 ; i&lt;=size ; i++)                       </a>
+        <a style="background-color: #ffffff">               ^ 305,598,464 (2)</a>
+   336) <a name="l336" style="background-color: #ffffff">     {</a>
+   337) <a name="l337" style="background-color: #ffffff">	if(*(flags+i))                                /* 2*size  */</a>
+        <a style="background-color: #ffffff">	     ^ 305,592,064 </a>
+   338) <a name="l338" style="background-color: #ffffff">	{                                             /* 1*count */</a>
+   339) <a name="l339" style="background-color: #ffffff">	count++;                                      /* 1*count */</a>
+        <a style="background-color: #ffffff">	^ 49,524,915 </a>
+   340) <a name="l340" style="background-color: #ffffff">	prime = i + i + 3;                            /* 3*count */</a>
+   341) <a name="l341" style="background-color: #ffffff">	for(k = i + prime ; k&lt;=size ; k+=prime)     /* 3*count */</a>
+        <a style="background-color: #ffffff">	                    ^ 734,838,457 (2)</a>
+   342) <a name="l342" style="background-color: #ffffff">	{</a>
+   343) <a name="l343" style="background-color: #ffffff">	ci++;                                       /* 1*ci    */</a>
+   344) <a name="l344" style="background-color: #ffffff">	*(flags+k)=FALSE;                           /* 1*ci    */</a>
+   345) <a name="l345" style="background-color: #ffffff">	}                                           /* 3*ci    */</a>
+   346) <a name="l346" style="background-color: #ffffff">						    /* 1*count */</a>
+   347) <a name="l347" style="background-color: #ffffff">	}</a>
+   348) <a name="l348" style="background-color: #ffffff">     }                                               /* 3*size  */</a>
+   349) <a name="l349" style="background-color: #ffffff">						   </a>
+   350) <a name="l350" style="background-color: #ffffff">   j = j + count;                                   </a>
+   351) <a name="l351" style="background-color: #ffffff">   }                                               </a>
+   352) <a name="l352" style="background-color: #ffffff">						   </a>
+   353) <a name="l353" style="background-color: #ffffff">   dtime(TimeArray);</a>
+        <a style="background-color: #ffffff">   ^ 15 </a>
+   354) <a name="l354" style="background-color: #ffffff"></a>
+   355) <a name="l355" style="background-color: #ffffff">   free(ptr);</a>
+        <a style="background-color: #ffffff">   ^ 15 </a>
+   356) <a name="l356" style="background-color: #ffffff"></a>
+   357) <a name="l357" style="background-color: #ffffff">   runtime = (TimeArray[1] - nulltime) * 10.0 / (double)n;</a>
+        <a style="background-color: #ffffff">   ^ 15 </a>
+   358) <a name="l358" style="background-color: #ffffff"></a>
+   359) <a name="l359" style="background-color: #ffffff">   if ( m == 8191 ) reftime = runtime;</a>
+        <a style="background-color: #ffffff">                    ^ 2 </a>
+   360) <a name="l360" style="background-color: #ffffff"></a>
+   361) <a name="l361" style="background-color: #ffffff">   adj_time = reftime * ( (double)m / 8191.0 );</a>
+        <a style="background-color: #ffffff">   ^ 15 </a>
+   362) <a name="l362" style="background-color: #ffffff"></a>
+   363) <a name="l363" style="background-color: #ffffff">   emips = 9.0*(double)size+9.0*(double)count;</a>
+   364) <a name="l364" style="background-color: #ffffff">   emips = emips+5.0*(double)ci;</a>
+   365) <a name="l365" style="background-color: #ffffff">   emips = 1.0e-05*(emips/runtime);</a>
+   366) <a name="l366" style="background-color: #ffffff"></a>
+   367) <a name="l367" style="background-color: #ffffff">   N_Prime = j / n;</a>
+   368) <a name="l368" style="background-color: #ffffff">   L_Prime = prime;</a>
+   369) <a name="l369" style="background-color: #ffffff"></a>
+   370) <a name="l370" style="background-color: #ffffff">   if ( p != 0L )</a>
+   371) <a name="l371" style="background-color: #ffffff">   {</a>
+   372) <a name="l372" style="background-color: #ffffff">   printf(&quot;  %9ld   %8ld     %8ld  &quot;,m,N_Prime,L_Prime);</a>
+        <a style="background-color: #ffffff">   ^ 14 </a>
+   373) <a name="l373" style="background-color: #ffffff">   printf(&quot;%9.3f  %9.3f  %6.1f\n&quot;,adj_time,runtime,emips);</a>
+        <a style="background-color: #ffffff">   ^ 14 </a>
+   374) <a name="l374" style="background-color: #ffffff">   }</a>
+   375) <a name="l375" style="background-color: #ffffff"></a>
+   376) <a name="l376" style="background-color: #ffffff">return 0;</a>
+        <a style="background-color: #ffffff">       ^ 15 </a>
+   377) <a name="l377" style="background-color: #ffffff">}</a>
+   378) <a name="l378" style="background-color: #ffffff"></a>
+   379) <a name="l379" style="background-color: #ffffff">/*****************************************************/</a>
+   380) <a name="l380" style="background-color: #ffffff">/* Various timer routines.                           */</a>
+   381) <a name="l381" style="background-color: #ffffff">/* Al Aburto, aburto@nosc.mil, 18 Feb 1997           */</a>
+   382) <a name="l382" style="background-color: #ffffff">/*                                                   */</a>
+   383) <a name="l383" style="background-color: #ffffff">/* dtime(p) outputs the elapsed time seconds in p[1] */</a>
+   384) <a name="l384" style="background-color: #ffffff">/* from a call of dtime(p) to the next call of       */</a>
+   385) <a name="l385" style="background-color: #ffffff">/* dtime(p).  Use CAUTION as some of these routines  */</a>
+   386) <a name="l386" style="background-color: #ffffff">/* will mess up when timing across the hour mark!!!  */</a>
+   387) <a name="l387" style="background-color: #ffffff">/*                                                   */</a>
+   388) <a name="l388" style="background-color: #ffffff">/* For timing I use the 'user' time whenever         */</a>
+   389) <a name="l389" style="background-color: #ffffff">/* possible. Using 'user+sys' time is a separate     */</a>
+   390) <a name="l390" style="background-color: #ffffff">/* issue.                                            */</a>
+   391) <a name="l391" style="background-color: #ffffff">/*                                                   */</a>
+   392) <a name="l392" style="background-color: #ffffff">/* Example Usage:                                    */</a>
+   393) <a name="l393" style="background-color: #ffffff">/* [Timer options added here]                        */</a>
+   394) <a name="l394" style="background-color: #ffffff">/* double RunTime, TimeArray[3];                     */</a>
+   395) <a name="l395" style="background-color: #ffffff">/* main()                                            */</a>
+   396) <a name="l396" style="background-color: #ffffff">/* {                                                 */</a>
+   397) <a name="l397" style="background-color: #ffffff">/* dtime(TimeArray);                                 */ </a>
+   398) <a name="l398" style="background-color: #ffffff">/* [routine to time]                                 */</a>
+   399) <a name="l399" style="background-color: #ffffff">/* dtime(TimeArray);                                 */</a>
+   400) <a name="l400" style="background-color: #ffffff">/* RunTime = TimeArray[1];                           */</a>
+   401) <a name="l401" style="background-color: #ffffff">/* }                                                 */</a>
+   402) <a name="l402" style="background-color: #ffffff">/* [Timer code added here]                           */</a>
+   403) <a name="l403" style="background-color: #ffffff">/*****************************************************/</a>
+   404) <a name="l404" style="background-color: #ffffff"></a>
+   405) <a name="l405" style="background-color: #ffffff">/******************************/</a>
+   406) <a name="l406" style="background-color: #ffffff">/* Timer code.                */</a>
+   407) <a name="l407" style="background-color: #ffffff">/******************************/</a>
+   408) <a name="l408" style="background-color: #ffffff"></a>
+   409) <a name="l409" style="background-color: #ffffff">/*******************/</a>
+   410) <a name="l410" style="background-color: #ffffff">/*  Amiga dtime()  */</a>
+   411) <a name="l411" style="background-color: #ffffff">/*******************/</a>
+   412) <a name="l412" style="background-color: #ffffff">#ifdef Amiga</a>
+   413) <a name="l413" style="background-color: #ffffff">#include &lt;ctype.h&gt;</a>
+   414) <a name="l414" style="background-color: #ffffff">#define HZ 50</a>
+   415) <a name="l415" style="background-color: #ffffff"></a>
+   416) <a name="l416" style="background-color: #ffffff">dtime(p)</a>
+   417) <a name="l417" style="background-color: #ffffff">double p[];</a>
+   418) <a name="l418" style="background-color: #ffffff">{</a>
+   419) <a name="l419" style="background-color: #ffffff"> double q;</a>
+   420) <a name="l420" style="background-color: #ffffff"></a>
+   421) <a name="l421" style="background-color: #ffffff"> struct tt {</a>
+   422) <a name="l422" style="background-color: #ffffff">	long  days;</a>
+   423) <a name="l423" style="background-color: #ffffff">	long  minutes;</a>
+   424) <a name="l424" style="background-color: #ffffff">	long  ticks;</a>
+   425) <a name="l425" style="background-color: #ffffff"> } tt;</a>
+   426) <a name="l426" style="background-color: #ffffff"></a>
+   427) <a name="l427" style="background-color: #ffffff"> q = p[2];</a>
+   428) <a name="l428" style="background-color: #ffffff"></a>
+   429) <a name="l429" style="background-color: #ffffff"> DateStamp(&amp;tt);</a>
+   430) <a name="l430" style="background-color: #ffffff"></a>
+   431) <a name="l431" style="background-color: #ffffff"> p[2] = ( (double)(tt.ticks + (tt.minutes * 60L * 50L)) ) / (double)HZ;</a>
+   432) <a name="l432" style="background-color: #ffffff"> p[1] = p[2] - q;</a>
+   433) <a name="l433" style="background-color: #ffffff">	</a>
+   434) <a name="l434" style="background-color: #ffffff"> return 0;</a>
+   435) <a name="l435" style="background-color: #ffffff">}</a>
+   436) <a name="l436" style="background-color: #ffffff">#endif</a>
+   437) <a name="l437" style="background-color: #ffffff"></a>
+   438) <a name="l438" style="background-color: #ffffff">/*****************************************************/</a>
+   439) <a name="l439" style="background-color: #ffffff">/*  UNIX dtime(). This is the preferred UNIX timer.  */</a>
+   440) <a name="l440" style="background-color: #ffffff">/*  Provided by: Markku Kolkka, mk59200@cc.tut.fi    */</a>
+   441) <a name="l441" style="background-color: #ffffff">/*  HP-UX Addition by: Bo Thide', bt@irfu.se         */</a>
+   442) <a name="l442" style="background-color: #ffffff">/*****************************************************/</a>
+   443) <a name="l443" style="background-color: #ffffff">#ifdef UNIX</a>
+   444) <a name="l444" style="background-color: #ffffff">#include &lt;sys/time.h&gt;</a>
+   445) <a name="l445" style="background-color: #ffffff">#include &lt;sys/resource.h&gt;</a>
+   446) <a name="l446" style="background-color: #ffffff"></a>
+   447) <a name="l447" style="background-color: #ffffff">#ifdef hpux</a>
+   448) <a name="l448" style="background-color: #ffffff">#include &lt;sys/syscall.h&gt;</a>
+   449) <a name="l449" style="background-color: #ffffff">#define getrusage(a,b) syscall(SYS_getrusage,a,b)</a>
+   450) <a name="l450" style="background-color: #ffffff">#endif</a>
+   451) <a name="l451" style="background-color: #ffffff"></a>
+   452) <a name="l452" style="background-color: #ffffff">struct rusage rusage;</a>
+   453) <a name="l453" style="background-color: #ffffff"></a>
+   454) <a name="l454" style="background-color: #ffffff">int dtime(p)</a>
+        <a style="background-color: #ffffff">    ^ 60 </a>
+   455) <a name="l455" style="background-color: #ffffff">double p[];</a>
+   456) <a name="l456" style="background-color: #ffffff">{</a>
+   457) <a name="l457" style="background-color: #ffffff"> double q;</a>
+   458) <a name="l458" style="background-color: #ffffff"></a>
+   459) <a name="l459" style="background-color: #ffffff"> q = p[2];</a>
+   460) <a name="l460" style="background-color: #ffffff"></a>
+   461) <a name="l461" style="background-color: #ffffff"> getrusage(RUSAGE_SELF,&amp;rusage);</a>
+   462) <a name="l462" style="background-color: #ffffff"></a>
+   463) <a name="l463" style="background-color: #ffffff"> p[2] = (double)(rusage.ru_utime.tv_sec);</a>
+        <a style="background-color: #ffffff"> ^ 60 </a>
+   464) <a name="l464" style="background-color: #ffffff"> p[2] = p[2] + (double)(rusage.ru_utime.tv_usec) * 1.0e-06;</a>
+   465) <a name="l465" style="background-color: #ffffff"> p[1] = p[2] - q;</a>
+   466) <a name="l466" style="background-color: #ffffff">	</a>
+   467) <a name="l467" style="background-color: #ffffff"> return 0;</a>
+   468) <a name="l468" style="background-color: #ffffff">}</a>
+   469) <a name="l469" style="background-color: #ffffff">#endif</a>
+   470) <a name="l470" style="background-color: #ffffff"></a>
+   471) <a name="l471" style="background-color: #ffffff">/***************************************************/</a>
+   472) <a name="l472" style="background-color: #ffffff">/*  UNIX_Old dtime(). This is the old UNIX timer.  */</a>
+   473) <a name="l473" style="background-color: #ffffff">/*  Use only if absolutely necessary as HZ may be  */</a>
+   474) <a name="l474" style="background-color: #ffffff">/*  ill defined on your system.                    */</a>
+   475) <a name="l475" style="background-color: #ffffff">/***************************************************/</a>
+   476) <a name="l476" style="background-color: #ffffff">#ifdef UNIX_Old</a>
+   477) <a name="l477" style="background-color: #ffffff">#include &lt;sys/types.h&gt;</a>
+   478) <a name="l478" style="background-color: #ffffff">#include &lt;sys/times.h&gt;</a>
+   479) <a name="l479" style="background-color: #ffffff">#include &lt;sys/param.h&gt;</a>
+   480) <a name="l480" style="background-color: #ffffff"></a>
+   481) <a name="l481" style="background-color: #ffffff">#ifndef HZ</a>
+   482) <a name="l482" style="background-color: #ffffff">#define HZ 60</a>
+   483) <a name="l483" style="background-color: #ffffff">#endif</a>
+   484) <a name="l484" style="background-color: #ffffff"></a>
+   485) <a name="l485" style="background-color: #ffffff">struct tms tms;</a>
+   486) <a name="l486" style="background-color: #ffffff"></a>
+   487) <a name="l487" style="background-color: #ffffff">dtime(p)</a>
+   488) <a name="l488" style="background-color: #ffffff">double p[];</a>
+   489) <a name="l489" style="background-color: #ffffff">{</a>
+   490) <a name="l490" style="background-color: #ffffff"> double q;</a>
+   491) <a name="l491" style="background-color: #ffffff"></a>
+   492) <a name="l492" style="background-color: #ffffff"> q = p[2];</a>
+   493) <a name="l493" style="background-color: #ffffff"></a>
+   494) <a name="l494" style="background-color: #ffffff"> times(&amp;tms);</a>
+   495) <a name="l495" style="background-color: #ffffff"></a>
+   496) <a name="l496" style="background-color: #ffffff"> p[2] = (double)(tms.tms_utime) / (double)HZ;</a>
+   497) <a name="l497" style="background-color: #ffffff"> p[1] = p[2] - q;</a>
+   498) <a name="l498" style="background-color: #ffffff">	</a>
+   499) <a name="l499" style="background-color: #ffffff"> return 0;</a>
+   500) <a name="l500" style="background-color: #ffffff">}</a>
+   501) <a name="l501" style="background-color: #ffffff">#endif</a>
+   502) <a name="l502" style="background-color: #ffffff"></a>
+   503) <a name="l503" style="background-color: #ffffff">/*********************************************************/</a>
+   504) <a name="l504" style="background-color: #ffffff">/*  VMS dtime() for VMS systems.                         */</a>
+   505) <a name="l505" style="background-color: #ffffff">/*  Provided by: RAMO@uvphys.phys.UVic.CA                */</a>
+   506) <a name="l506" style="background-color: #ffffff">/*  Some people have run into problems with this timer.  */</a>
+   507) <a name="l507" style="background-color: #ffffff">/*********************************************************/</a>
+   508) <a name="l508" style="background-color: #ffffff">#ifdef VMS</a>
+   509) <a name="l509" style="background-color: #ffffff">#include time</a>
+   510) <a name="l510" style="background-color: #ffffff"></a>
+   511) <a name="l511" style="background-color: #ffffff">#ifndef HZ</a>
+   512) <a name="l512" style="background-color: #ffffff">#define HZ 100</a>
+   513) <a name="l513" style="background-color: #ffffff">#endif</a>
+   514) <a name="l514" style="background-color: #ffffff"></a>
+   515) <a name="l515" style="background-color: #ffffff">struct tbuffer_t</a>
+   516) <a name="l516" style="background-color: #ffffff">      {</a>
+   517) <a name="l517" style="background-color: #ffffff">       int proc_user_time;</a>
+   518) <a name="l518" style="background-color: #ffffff">       int proc_system_time;</a>
+   519) <a name="l519" style="background-color: #ffffff">       int child_user_time;</a>
+   520) <a name="l520" style="background-color: #ffffff">       int child_system_time;</a>
+   521) <a name="l521" style="background-color: #ffffff">      };</a>
+   522) <a name="l522" style="background-color: #ffffff"></a>
+   523) <a name="l523" style="background-color: #ffffff">struct tbuffer_t tms;</a>
+   524) <a name="l524" style="background-color: #ffffff"></a>
+   525) <a name="l525" style="background-color: #ffffff">dtime(p)</a>
+   526) <a name="l526" style="background-color: #ffffff">double p[];</a>
+   527) <a name="l527" style="background-color: #ffffff">{</a>
+   528) <a name="l528" style="background-color: #ffffff"> double q;</a>
+   529) <a name="l529" style="background-color: #ffffff"></a>
+   530) <a name="l530" style="background-color: #ffffff"> q = p[2];</a>
+   531) <a name="l531" style="background-color: #ffffff"></a>
+   532) <a name="l532" style="background-color: #ffffff"> times(&amp;tms);</a>
+   533) <a name="l533" style="background-color: #ffffff"></a>
+   534) <a name="l534" style="background-color: #ffffff"> p[2] = (double)(tms.proc_user_time) / (double)HZ;</a>
+   535) <a name="l535" style="background-color: #ffffff"> p[1] = p[2] - q;</a>
+   536) <a name="l536" style="background-color: #ffffff">	</a>
+   537) <a name="l537" style="background-color: #ffffff"> return 0;</a>
+   538) <a name="l538" style="background-color: #ffffff">}</a>
+   539) <a name="l539" style="background-color: #ffffff">#endif</a>
+   540) <a name="l540" style="background-color: #ffffff"></a>
+   541) <a name="l541" style="background-color: #ffffff">/******************************/</a>
+   542) <a name="l542" style="background-color: #ffffff">/*  BORLAND C dtime() for DOS */</a>
+   543) <a name="l543" style="background-color: #ffffff">/******************************/</a>
+   544) <a name="l544" style="background-color: #ffffff">#ifdef BORLAND_C</a>
+   545) <a name="l545" style="background-color: #ffffff">#include &lt;ctype.h&gt;</a>
+   546) <a name="l546" style="background-color: #ffffff">#include &lt;dos.h&gt;</a>
+   547) <a name="l547" style="background-color: #ffffff">#include &lt;time.h&gt;</a>
+   548) <a name="l548" style="background-color: #ffffff"></a>
+   549) <a name="l549" style="background-color: #ffffff">#define HZ 100</a>
+   550) <a name="l550" style="background-color: #ffffff">struct time tnow;</a>
+   551) <a name="l551" style="background-color: #ffffff"></a>
+   552) <a name="l552" style="background-color: #ffffff">dtime(p)</a>
+   553) <a name="l553" style="background-color: #ffffff">double p[];</a>
+   554) <a name="l554" style="background-color: #ffffff">{</a>
+   555) <a name="l555" style="background-color: #ffffff"> double q;</a>
+   556) <a name="l556" style="background-color: #ffffff"></a>
+   557) <a name="l557" style="background-color: #ffffff"> q = p[2];</a>
+   558) <a name="l558" style="background-color: #ffffff"></a>
+   559) <a name="l559" style="background-color: #ffffff"> gettime(&amp;tnow);</a>
+   560) <a name="l560" style="background-color: #ffffff"></a>
+   561) <a name="l561" style="background-color: #ffffff"> p[2] = 60.0 * (double)(tnow.ti_min);</a>
+   562) <a name="l562" style="background-color: #ffffff"> p[2] = p[2] + (double)(tnow.ti_sec);</a>
+   563) <a name="l563" style="background-color: #ffffff"> p[2] = p[2] + (double)(tnow.ti_hund)/(double)HZ;</a>
+   564) <a name="l564" style="background-color: #ffffff"> p[1] = p[2] - q;</a>
+   565) <a name="l565" style="background-color: #ffffff">	</a>
+   566) <a name="l566" style="background-color: #ffffff"> return 0;</a>
+   567) <a name="l567" style="background-color: #ffffff">}</a>
+   568) <a name="l568" style="background-color: #ffffff">#endif</a>
+   569) <a name="l569" style="background-color: #ffffff"></a>
+   570) <a name="l570" style="background-color: #ffffff">/**************************************/</a>
+   571) <a name="l571" style="background-color: #ffffff">/*  Microsoft C (MSC) dtime() for DOS */</a>
+   572) <a name="l572" style="background-color: #ffffff">/**************************************/</a>
+   573) <a name="l573" style="background-color: #ffffff">#ifdef MSC</a>
+   574) <a name="l574" style="background-color: #ffffff">#include &lt;time.h&gt;</a>
+   575) <a name="l575" style="background-color: #ffffff">#include &lt;ctype.h&gt;</a>
+   576) <a name="l576" style="background-color: #ffffff"></a>
+   577) <a name="l577" style="background-color: #ffffff">#define HZ CLOCKS_PER_SEC</a>
+   578) <a name="l578" style="background-color: #ffffff">clock_t tnow;</a>
+   579) <a name="l579" style="background-color: #ffffff"></a>
+   580) <a name="l580" style="background-color: #ffffff">dtime(p)</a>
+   581) <a name="l581" style="background-color: #ffffff">double p[];</a>
+   582) <a name="l582" style="background-color: #ffffff">{</a>
+   583) <a name="l583" style="background-color: #ffffff"> double q;</a>
+   584) <a name="l584" style="background-color: #ffffff"></a>
+   585) <a name="l585" style="background-color: #ffffff"> q = p[2];</a>
+   586) <a name="l586" style="background-color: #ffffff"></a>
+   587) <a name="l587" style="background-color: #ffffff"> tnow = clock();</a>
+   588) <a name="l588" style="background-color: #ffffff"></a>
+   589) <a name="l589" style="background-color: #ffffff"> p[2] = (double)tnow / (double)HZ;</a>
+   590) <a name="l590" style="background-color: #ffffff"> p[1] = p[2] - q;</a>
+   591) <a name="l591" style="background-color: #ffffff">	</a>
+   592) <a name="l592" style="background-color: #ffffff"> return 0;</a>
+   593) <a name="l593" style="background-color: #ffffff">}</a>
+   594) <a name="l594" style="background-color: #ffffff">#endif</a>
+   595) <a name="l595" style="background-color: #ffffff"></a>
+   596) <a name="l596" style="background-color: #ffffff">/*************************************/</a>
+   597) <a name="l597" style="background-color: #ffffff">/*  Macintosh (MAC) Think C dtime()  */</a>
+   598) <a name="l598" style="background-color: #ffffff">/*************************************/</a>
+   599) <a name="l599" style="background-color: #ffffff">#ifdef MAC</a>
+   600) <a name="l600" style="background-color: #ffffff">#include &lt;time.h&gt;</a>
+   601) <a name="l601" style="background-color: #ffffff"></a>
+   602) <a name="l602" style="background-color: #ffffff">#define HZ 60</a>
+   603) <a name="l603" style="background-color: #ffffff"></a>
+   604) <a name="l604" style="background-color: #ffffff">dtime(p)</a>
+   605) <a name="l605" style="background-color: #ffffff">double p[];</a>
+   606) <a name="l606" style="background-color: #ffffff">{</a>
+   607) <a name="l607" style="background-color: #ffffff"> double q;</a>
+   608) <a name="l608" style="background-color: #ffffff"></a>
+   609) <a name="l609" style="background-color: #ffffff"> q = p[2];</a>
+   610) <a name="l610" style="background-color: #ffffff"></a>
+   611) <a name="l611" style="background-color: #ffffff"> p[2] = (double)clock() / (double)HZ;</a>
+   612) <a name="l612" style="background-color: #ffffff"> p[1] = p[2] - q;</a>
+   613) <a name="l613" style="background-color: #ffffff">	</a>
+   614) <a name="l614" style="background-color: #ffffff"> return 0;</a>
+   615) <a name="l615" style="background-color: #ffffff">}</a>
+   616) <a name="l616" style="background-color: #ffffff">#endif</a>
+   617) <a name="l617" style="background-color: #ffffff"></a>
+   618) <a name="l618" style="background-color: #ffffff">/************************************************************/</a>
+   619) <a name="l619" style="background-color: #ffffff">/*  iPSC/860 (IPSC) dtime() for i860.                       */</a>
+   620) <a name="l620" style="background-color: #ffffff">/*  Provided by: Dan Yergeau, yergeau@gloworm.Stanford.EDU  */</a>
+   621) <a name="l621" style="background-color: #ffffff">/************************************************************/</a>
+   622) <a name="l622" style="background-color: #ffffff">#ifdef IPSC</a>
+   623) <a name="l623" style="background-color: #ffffff">extern double dclock();</a>
+   624) <a name="l624" style="background-color: #ffffff"></a>
+   625) <a name="l625" style="background-color: #ffffff">dtime(p)</a>
+   626) <a name="l626" style="background-color: #ffffff">double p[];</a>
+   627) <a name="l627" style="background-color: #ffffff">{</a>
+   628) <a name="l628" style="background-color: #ffffff">  double q;</a>
+   629) <a name="l629" style="background-color: #ffffff"></a>
+   630) <a name="l630" style="background-color: #ffffff">  q = p[2];</a>
+   631) <a name="l631" style="background-color: #ffffff"></a>
+   632) <a name="l632" style="background-color: #ffffff">  p[2] = dclock();</a>
+   633) <a name="l633" style="background-color: #ffffff">  p[1] = p[2] - q;</a>
+   634) <a name="l634" style="background-color: #ffffff">	</a>
+   635) <a name="l635" style="background-color: #ffffff">  return 0;</a>
+   636) <a name="l636" style="background-color: #ffffff">}</a>
+   637) <a name="l637" style="background-color: #ffffff">#endif</a>
+   638) <a name="l638" style="background-color: #ffffff"></a>
+   639) <a name="l639" style="background-color: #ffffff">/**************************************************/</a>
+   640) <a name="l640" style="background-color: #ffffff">/*  FORTRAN dtime() for Cray type systems.        */</a>
+   641) <a name="l641" style="background-color: #ffffff">/*  This is the preferred timer for Cray systems. */</a>
+   642) <a name="l642" style="background-color: #ffffff">/**************************************************/</a>
+   643) <a name="l643" style="background-color: #ffffff">#ifdef FORTRAN_SEC</a>
+   644) <a name="l644" style="background-color: #ffffff"></a>
+   645) <a name="l645" style="background-color: #ffffff">fortran double second();</a>
+   646) <a name="l646" style="background-color: #ffffff"></a>
+   647) <a name="l647" style="background-color: #ffffff">dtime(p)</a>
+   648) <a name="l648" style="background-color: #ffffff">double p[];</a>
+   649) <a name="l649" style="background-color: #ffffff">{</a>
+   650) <a name="l650" style="background-color: #ffffff"> double q,v;</a>
+   651) <a name="l651" style="background-color: #ffffff"></a>
+   652) <a name="l652" style="background-color: #ffffff"> q = p[2];</a>
+   653) <a name="l653" style="background-color: #ffffff"></a>
+   654) <a name="l654" style="background-color: #ffffff"> second(&amp;v);</a>
+   655) <a name="l655" style="background-color: #ffffff"> p[2] = v;</a>
+   656) <a name="l656" style="background-color: #ffffff"> p[1] = p[2] - q;</a>
+   657) <a name="l657" style="background-color: #ffffff">	</a>
+   658) <a name="l658" style="background-color: #ffffff"> return 0;</a>
+   659) <a name="l659" style="background-color: #ffffff">}</a>
+   660) <a name="l660" style="background-color: #ffffff">#endif</a>
+   661) <a name="l661" style="background-color: #ffffff"></a>
+   662) <a name="l662" style="background-color: #ffffff">/***********************************************************/</a>
+   663) <a name="l663" style="background-color: #ffffff">/*  UNICOS C dtime() for Cray UNICOS systems.  Don't use   */</a>
+   664) <a name="l664" style="background-color: #ffffff">/*  unless absolutely necessary as returned time includes  */</a>
+   665) <a name="l665" style="background-color: #ffffff">/*  'user+system' time.  Provided by: R. Mike Dority,      */</a>
+   666) <a name="l666" style="background-color: #ffffff">/*  dority@craysea.cray.com                                */</a>
+   667) <a name="l667" style="background-color: #ffffff">/***********************************************************/</a>
+   668) <a name="l668" style="background-color: #ffffff">#ifdef CTimer</a>
+   669) <a name="l669" style="background-color: #ffffff">#include &lt;time.h&gt;</a>
+   670) <a name="l670" style="background-color: #ffffff"></a>
+   671) <a name="l671" style="background-color: #ffffff">dtime(p)</a>
+   672) <a name="l672" style="background-color: #ffffff">double p[];</a>
+   673) <a name="l673" style="background-color: #ffffff">{</a>
+   674) <a name="l674" style="background-color: #ffffff"> double    q;</a>
+   675) <a name="l675" style="background-color: #ffffff"> clock_t   clock(void);</a>
+   676) <a name="l676" style="background-color: #ffffff"></a>
+   677) <a name="l677" style="background-color: #ffffff"> q = p[2];</a>
+   678) <a name="l678" style="background-color: #ffffff"></a>
+   679) <a name="l679" style="background-color: #ffffff"> p[2] = (double)clock() / (double)CLOCKS_PER_SEC;</a>
+   680) <a name="l680" style="background-color: #ffffff"> p[1] = p[2] - q;</a>
+   681) <a name="l681" style="background-color: #ffffff"></a>
+   682) <a name="l682" style="background-color: #ffffff"> return 0;</a>
+   683) <a name="l683" style="background-color: #ffffff">}</a>
+   684) <a name="l684" style="background-color: #ffffff">#endif</a>
+   685) <a name="l685" style="background-color: #ffffff"></a>
+   686) <a name="l686" style="background-color: #ffffff">/********************************************/</a>
+   687) <a name="l687" style="background-color: #ffffff">/* Another UNIX timer using gettimeofday(). */</a>
+   688) <a name="l688" style="background-color: #ffffff">/* However, getrusage() is preferred.       */</a>
+   689) <a name="l689" style="background-color: #ffffff">/********************************************/</a>
+   690) <a name="l690" style="background-color: #ffffff">#ifdef GTODay</a>
+   691) <a name="l691" style="background-color: #ffffff">#include &lt;sys/time.h&gt;</a>
+   692) <a name="l692" style="background-color: #ffffff"></a>
+   693) <a name="l693" style="background-color: #ffffff">struct timeval tnow;</a>
+   694) <a name="l694" style="background-color: #ffffff"></a>
+   695) <a name="l695" style="background-color: #ffffff">dtime(p)</a>
+   696) <a name="l696" style="background-color: #ffffff">double p[];</a>
+   697) <a name="l697" style="background-color: #ffffff">{</a>
+   698) <a name="l698" style="background-color: #ffffff"> double q;</a>
+   699) <a name="l699" style="background-color: #ffffff"></a>
+   700) <a name="l700" style="background-color: #ffffff"> q = p[2];</a>
+   701) <a name="l701" style="background-color: #ffffff"></a>
+   702) <a name="l702" style="background-color: #ffffff"> gettimeofday(&amp;tnow,NULL);</a>
+   703) <a name="l703" style="background-color: #ffffff"> p[2] = (double)tnow.tv_sec + (double)tnow.tv_usec * 1.0e-6;</a>
+   704) <a name="l704" style="background-color: #ffffff"> p[1] = p[2] - q;</a>
+   705) <a name="l705" style="background-color: #ffffff"></a>
+   706) <a name="l706" style="background-color: #ffffff"> return 0;</a>
+   707) <a name="l707" style="background-color: #ffffff">}</a>
+   708) <a name="l708" style="background-color: #ffffff">#endif</a>
+   709) <a name="l709" style="background-color: #ffffff"></a>
+   710) <a name="l710" style="background-color: #ffffff">/*****************************************************/</a>
+   711) <a name="l711" style="background-color: #ffffff">/*  Fujitsu UXP/M timer.                             */</a>
+   712) <a name="l712" style="background-color: #ffffff">/*  Provided by: Mathew Lim, ANUSF, M.Lim@anu.edu.au */</a>
+   713) <a name="l713" style="background-color: #ffffff">/*****************************************************/</a>
+   714) <a name="l714" style="background-color: #ffffff">#ifdef UXPM</a>
+   715) <a name="l715" style="background-color: #ffffff">#include &lt;sys/types.h&gt;</a>
+   716) <a name="l716" style="background-color: #ffffff">#include &lt;sys/timesu.h&gt;</a>
+   717) <a name="l717" style="background-color: #ffffff">struct tmsu rusage;</a>
+   718) <a name="l718" style="background-color: #ffffff"></a>
+   719) <a name="l719" style="background-color: #ffffff">dtime(p)</a>
+   720) <a name="l720" style="background-color: #ffffff">double p[];</a>
+   721) <a name="l721" style="background-color: #ffffff">{</a>
+   722) <a name="l722" style="background-color: #ffffff"> double q;</a>
+   723) <a name="l723" style="background-color: #ffffff"></a>
+   724) <a name="l724" style="background-color: #ffffff"> q = p[2];</a>
+   725) <a name="l725" style="background-color: #ffffff"></a>
+   726) <a name="l726" style="background-color: #ffffff"> timesu(&amp;rusage);</a>
+   727) <a name="l727" style="background-color: #ffffff"></a>
+   728) <a name="l728" style="background-color: #ffffff"> p[2] = (double)(rusage.tms_utime) * 1.0e-06;</a>
+   729) <a name="l729" style="background-color: #ffffff"> p[1] = p[2] - q;</a>
+   730) <a name="l730" style="background-color: #ffffff">	</a>
+   731) <a name="l731" style="background-color: #ffffff"> return 0;</a>
+   732) <a name="l732" style="background-color: #ffffff">}</a>
+   733) <a name="l733" style="background-color: #ffffff">#endif</a>
+   734) <a name="l734" style="background-color: #ffffff"></a>
+   735) <a name="l735" style="background-color: #ffffff">/**********************************************/</a>
+   736) <a name="l736" style="background-color: #ffffff">/*    Macintosh (MAC_TMgr) Think C dtime()    */</a>
+   737) <a name="l737" style="background-color: #ffffff">/*   requires Think C Language Extensions or  */</a>
+   738) <a name="l738" style="background-color: #ffffff">/*    #include &lt;MacHeaders&gt; in the prefix     */</a>
+   739) <a name="l739" style="background-color: #ffffff">/*  provided by Francis H Schiffer 3rd (fhs)  */</a>
+   740) <a name="l740" style="background-color: #ffffff">/*         skipschiffer@genie.geis.com        */</a>
+   741) <a name="l741" style="background-color: #ffffff">/**********************************************/</a>
+   742) <a name="l742" style="background-color: #ffffff">#ifdef MAC_TMgr</a>
+   743) <a name="l743" style="background-color: #ffffff">#include &lt;Time.h&gt;</a>
+   744) <a name="l744" style="background-color: #ffffff">#include &lt;stdlib.h&gt;</a>
+   745) <a name="l745" style="background-color: #ffffff"></a>
+   746) <a name="l746" style="background-color: #ffffff">static TMTask   mgrTimer;</a>
+   747) <a name="l747" style="background-color: #ffffff">static Boolean  mgrInited = FALSE;</a>
+   748) <a name="l748" style="background-color: #ffffff">static double   mgrClock;</a>
+   749) <a name="l749" style="background-color: #ffffff"></a>
+   750) <a name="l750" style="background-color: #ffffff">#define RMV_TIMER RmvTime( (QElemPtr)&amp;mgrTimer )</a>
+   751) <a name="l751" style="background-color: #ffffff">#define MAX_TIME  1800000000L</a>
+   752) <a name="l752" style="background-color: #ffffff">/* MAX_TIME limits time between calls to */</a>
+   753) <a name="l753" style="background-color: #ffffff">/* dtime( ) to no more than 30 minutes   */</a>
+   754) <a name="l754" style="background-color: #ffffff">/* this limitation could be removed by   */</a>
+   755) <a name="l755" style="background-color: #ffffff">/* creating a completion routine to sum  */</a>
+   756) <a name="l756" style="background-color: #ffffff">/* 30 minute segments (fhs 1994 feb 9)   */</a>
+   757) <a name="l757" style="background-color: #ffffff"></a>
+   758) <a name="l758" style="background-color: #ffffff">static void     Remove_timer( )</a>
+   759) <a name="l759" style="background-color: #ffffff">{</a>
+   760) <a name="l760" style="background-color: #ffffff"> RMV_TIMER;</a>
+   761) <a name="l761" style="background-color: #ffffff"> mgrInited = FALSE;</a>
+   762) <a name="l762" style="background-color: #ffffff">}</a>
+   763) <a name="l763" style="background-color: #ffffff"></a>
+   764) <a name="l764" style="background-color: #ffffff">int     dtime( p )</a>
+   765) <a name="l765" style="background-color: #ffffff">double p[];</a>
+   766) <a name="l766" style="background-color: #ffffff">{</a>
+   767) <a name="l767" style="background-color: #ffffff"> if ( mgrInited ) {</a>
+   768) <a name="l768" style="background-color: #ffffff">    RMV_TIMER;</a>
+   769) <a name="l769" style="background-color: #ffffff">    mgrClock += (MAX_TIME + mgrTimer.tmCount)*1.0e-6;</a>
+   770) <a name="l770" style="background-color: #ffffff">    } else {</a>
+   771) <a name="l771" style="background-color: #ffffff">    if ( _atexit( &amp;Remove_timer ) == 0 ) mgrInited = TRUE;</a>
+   772) <a name="l772" style="background-color: #ffffff">    mgrClock = 0.0;</a>
+   773) <a name="l773" style="background-color: #ffffff">   }</a>
+   774) <a name="l774" style="background-color: #ffffff">	</a>
+   775) <a name="l775" style="background-color: #ffffff"> p[1] = mgrClock - p[2];</a>
+   776) <a name="l776" style="background-color: #ffffff"> p[2] = mgrClock;</a>
+   777) <a name="l777" style="background-color: #ffffff"> if ( mgrInited ) {</a>
+   778) <a name="l778" style="background-color: #ffffff">    mgrTimer.tmAddr = NULL;</a>
+   779) <a name="l779" style="background-color: #ffffff">    mgrTimer.tmCount = 0;</a>
+   780) <a name="l780" style="background-color: #ffffff">    mgrTimer.tmWakeUp = 0;</a>
+   781) <a name="l781" style="background-color: #ffffff">    mgrTimer.tmReserved = 0;</a>
+   782) <a name="l782" style="background-color: #ffffff">    InsTime( (QElemPtr)&amp;mgrTimer );</a>
+   783) <a name="l783" style="background-color: #ffffff">    PrimeTime( (QElemPtr)&amp;mgrTimer, -MAX_TIME );</a>
+   784) <a name="l784" style="background-color: #ffffff">   }</a>
+   785) <a name="l785" style="background-color: #ffffff"> return( 0 );</a>
+   786) <a name="l786" style="background-color: #ffffff">}</a>
+   787) <a name="l787" style="background-color: #ffffff">#endif</a>
+   788) <a name="l788" style="background-color: #ffffff"></a>
+   789) <a name="l789" style="background-color: #ffffff">/***********************************************************/</a>
+   790) <a name="l790" style="background-color: #ffffff">/*  Parsytec GCel timer.                                   */</a>
+   791) <a name="l791" style="background-color: #ffffff">/*  Provided by: Georg Wambach, gw@informatik.uni-koeln.de */</a>
+   792) <a name="l792" style="background-color: #ffffff">/***********************************************************/</a>
+   793) <a name="l793" style="background-color: #ffffff">#ifdef PARIX</a>
+   794) <a name="l794" style="background-color: #ffffff">#include &lt;sys/time.h&gt;</a>
+   795) <a name="l795" style="background-color: #ffffff"></a>
+   796) <a name="l796" style="background-color: #ffffff">dtime(p)</a>
+   797) <a name="l797" style="background-color: #ffffff">double p[];</a>
+   798) <a name="l798" style="background-color: #ffffff">{</a>
+   799) <a name="l799" style="background-color: #ffffff"> double q;</a>
+   800) <a name="l800" style="background-color: #ffffff"></a>
+   801) <a name="l801" style="background-color: #ffffff"> q = p[2];</a>
+   802) <a name="l802" style="background-color: #ffffff"> p[2] = (double) (TimeNowHigh()) / (double) CLK_TCK_HIGH;</a>
+   803) <a name="l803" style="background-color: #ffffff"> p[1] = p[2] - q;</a>
+   804) <a name="l804" style="background-color: #ffffff"></a>
+   805) <a name="l805" style="background-color: #ffffff"> return 0;</a>
+   806) <a name="l806" style="background-color: #ffffff">}</a>
+   807) <a name="l807" style="background-color: #ffffff">#endif</a>
+   808) <a name="l808" style="background-color: #ffffff"></a>
+   809) <a name="l809" style="background-color: #ffffff">/************************************************/</a>
+   810) <a name="l810" style="background-color: #ffffff">/*  Sun Solaris POSIX dtime() routine           */</a>
+   811) <a name="l811" style="background-color: #ffffff">/*  Provided by: Case Larsen, CTLarsen@lbl.gov  */</a>
+   812) <a name="l812" style="background-color: #ffffff">/************************************************/</a>
+   813) <a name="l813" style="background-color: #ffffff">#ifdef POSIX</a>
+   814) <a name="l814" style="background-color: #ffffff">#include &lt;sys/time.h&gt;</a>
+   815) <a name="l815" style="background-color: #ffffff">#include &lt;sys/resource.h&gt;</a>
+   816) <a name="l816" style="background-color: #ffffff">#include &lt;sys/rusage.h&gt;</a>
+   817) <a name="l817" style="background-color: #ffffff"></a>
+   818) <a name="l818" style="background-color: #ffffff">#ifdef __hpux</a>
+   819) <a name="l819" style="background-color: #ffffff">#include &lt;sys/syscall.h&gt;</a>
+   820) <a name="l820" style="background-color: #ffffff">#define getrusage(a,b) syscall(SYS_getrusage,a,b)</a>
+   821) <a name="l821" style="background-color: #ffffff">#endif</a>
+   822) <a name="l822" style="background-color: #ffffff"></a>
+   823) <a name="l823" style="background-color: #ffffff">struct rusage rusage;</a>
+   824) <a name="l824" style="background-color: #ffffff"></a>
+   825) <a name="l825" style="background-color: #ffffff">dtime(p)</a>
+   826) <a name="l826" style="background-color: #ffffff">double p[];</a>
+   827) <a name="l827" style="background-color: #ffffff">{</a>
+   828) <a name="l828" style="background-color: #ffffff"> double q;</a>
+   829) <a name="l829" style="background-color: #ffffff"></a>
+   830) <a name="l830" style="background-color: #ffffff"> q = p[2];</a>
+   831) <a name="l831" style="background-color: #ffffff"></a>
+   832) <a name="l832" style="background-color: #ffffff"> getrusage(RUSAGE_SELF,&amp;rusage);</a>
+   833) <a name="l833" style="background-color: #ffffff"></a>
+   834) <a name="l834" style="background-color: #ffffff"> p[2] = (double)(rusage.ru_utime.tv_sec);</a>
+   835) <a name="l835" style="background-color: #ffffff"> p[2] = p[2] + (double)(rusage.ru_utime.tv_nsec) * 1.0e-09;</a>
+   836) <a name="l836" style="background-color: #ffffff"> p[1] = p[2] - q;</a>
+   837) <a name="l837" style="background-color: #ffffff">	</a>
+   838) <a name="l838" style="background-color: #ffffff"> return 0;</a>
+   839) <a name="l839" style="background-color: #ffffff">}</a>
+   840) <a name="l840" style="background-color: #ffffff">#endif</a>
+   841) <a name="l841" style="background-color: #ffffff"></a>
+   842) <a name="l842" style="background-color: #ffffff">/****************************************************/</a>
+   843) <a name="l843" style="background-color: #ffffff">/*  Windows NT (32 bit) dtime() routine             */</a>
+   844) <a name="l844" style="background-color: #ffffff">/*  Provided by: Piers Haken, piersh@microsoft.com  */</a>
+   845) <a name="l845" style="background-color: #ffffff">/****************************************************/</a>
+   846) <a name="l846" style="background-color: #ffffff">#ifdef WIN32</a>
+   847) <a name="l847" style="background-color: #ffffff">#include &lt;windows.h&gt;</a>
+   848) <a name="l848" style="background-color: #ffffff"></a>
+   849) <a name="l849" style="background-color: #ffffff">dtime(p)</a>
+   850) <a name="l850" style="background-color: #ffffff">double p[];</a>
+   851) <a name="l851" style="background-color: #ffffff">{</a>
+   852) <a name="l852" style="background-color: #ffffff"> double q;</a>
+   853) <a name="l853" style="background-color: #ffffff"></a>
+   854) <a name="l854" style="background-color: #ffffff"> q = p[2];</a>
+   855) <a name="l855" style="background-color: #ffffff"></a>
+   856) <a name="l856" style="background-color: #ffffff"> p[2] = (double)GetTickCount() * 1.0e-03;</a>
+   857) <a name="l857" style="background-color: #ffffff"> p[1] = p[2] - q;</a>
+   858) <a name="l858" style="background-color: #ffffff"></a>
+   859) <a name="l859" style="background-color: #ffffff"> return 0;</a>
+   860) <a name="l860" style="background-color: #ffffff">}</a>
+   861) <a name="l861" style="background-color: #ffffff">#endif</a>
+   862) <a name="l862" style="background-color: #ffffff"></a>
+   863) <a name="l863" style="background-color: #ffffff">/*****************************************************/</a>
+   864) <a name="l864" style="background-color: #ffffff">/* Time according to POSIX.1  -  &lt;J.Pelan@qub.ac.uk&gt; */</a>
+   865) <a name="l865" style="background-color: #ffffff">/* Ref: &quot;POSIX Programmer's Guide&quot;  O'Reilly &amp; Assoc.*/</a>
+   866) <a name="l866" style="background-color: #ffffff">/*****************************************************/</a>
+   867) <a name="l867" style="background-color: #ffffff">#ifdef POSIX1</a>
+   868) <a name="l868" style="background-color: #ffffff">#define _POSIX_SOURCE 1</a>
+   869) <a name="l869" style="background-color: #ffffff">#include &lt;unistd.h&gt;</a>
+   870) <a name="l870" style="background-color: #ffffff">#include &lt;limits.h&gt;</a>
+   871) <a name="l871" style="background-color: #ffffff">#include &lt;sys/times.h&gt;</a>
+   872) <a name="l872" style="background-color: #ffffff"></a>
+   873) <a name="l873" style="background-color: #ffffff">struct tms tms;</a>
+   874) <a name="l874" style="background-color: #ffffff"></a>
+   875) <a name="l875" style="background-color: #ffffff">dtime(p)</a>
+   876) <a name="l876" style="background-color: #ffffff">double p[];</a>
+   877) <a name="l877" style="background-color: #ffffff">{</a>
+   878) <a name="l878" style="background-color: #ffffff"> double q;</a>
+   879) <a name="l879" style="background-color: #ffffff"> times(&amp;tms);</a>
+   880) <a name="l880" style="background-color: #ffffff"> q = p[2];</a>
+   881) <a name="l881" style="background-color: #ffffff"> p[2] = (double)tms.tms_utime / (double)CLK_TCK;</a>
+   882) <a name="l882" style="background-color: #ffffff"> p[1] = p[2] - q;</a>
+   883) <a name="l883" style="background-color: #ffffff"> return 0;</a>
+   884) <a name="l884" style="background-color: #ffffff">}</a>
+   885) <a name="l885" style="background-color: #ffffff">#endif</a>
+   886) <a name="l886" style="background-color: #ffffff"></a>
+   887) <a name="l887" style="background-color: #ffffff">/*------ End of nsieve.c, say goodnight Liz! (Sep 1992) ------*/</a>
+</pre>
+<hr size=1 noshade>
+<table border=0 cellpadding=3 cellspacing=0 width="100%" style="color:black;font-weight:normal;font-family:Verdana,Arial;font-size:xx-small">
+<td width="50%">
+<table border=0 cellpadding=3 cellspacing=0>
+<tr>
+<td>
+<a target="_new" href="http://www.intel.com"><img src="__IntelR.gif" border="0"></a>
+</td>
+<td style="font-size:xx-small">
+<i>generated by </i><BR><a target="_new" href="http://software.intel.com">Intel(R) C++/Fortran Compiler Classic code-coverage tool</a>
+</td>
+</tr>
+</table>
+</td>
+<td>
+<table border=0 cellpadding=3 cellspacing=0 width="50%">
+<tr><a>Web-Page Owner: <a href="mailto:nobody">Nobody</a></tr>
+</table>
+</td>
+</table>
+</body>
+</html>

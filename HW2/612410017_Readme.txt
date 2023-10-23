@@ -1,0 +1,56 @@
+#README
+612410017 林靖紳
+
+## Environment:
+
+* CPU Information
+Architecture:            x86_64
+  CPU op-mode(s):        32-bit, 64-bit
+  Address sizes:         39 bits physical, 48 bits virtual
+  Byte Order:            Little Endian
+CPU(s):                  12
+  On-line CPU(s) list:   0-11
+Vendor ID:               GenuineIntel
+  Model name:            11th Gen Intel(R) Core(TM) i5-11500 @ 2.70GHz
+
+
+* Memory
+               total        used        free      shared  buff/cache   available
+Mem:            31Gi       2.0Gi        24Gi       1.0Gi       4.7Gi        27Gi
+Swap:          2.0Gi          0B       2.0Gi
+
+* OS version
+Distributor ID:	Ubuntu
+Description:	Ubuntu 22.04.3 LTS
+Release:	22.04
+Codename:	jammy
+
+* gcc version
+gcc (Ubuntu 11.4.0-1ubuntu1~22.04) 11.4.0
+
+* icc version
+icc (ICC) 2021.10.0 20230609
+
+---
+
+## Compile
+
+* Generate *.spi
+~$ icc -DUNIX -O3 -prof-gen=srcpos nsieve.c -o nsieve
+
+* Execute "nsieve" to generate *.dyn
+~$ ./nsieve
+
+* Execute "profmerge" to generate *.dpi
+~$ profmerge
+
+---
+
+## Codecov
+
+* Run "codecov" generate .html
+~$ codecov -counts -prj nsieve -spi pgopti.spi -dpi pgopti.dpi
+
+* Run "-txtbcvrg" generate .txt
+~$ codecov -counts -prj nsieve -spi pgopti.spi -dpi pgopti.dpi -txtbcvrg result.txt
+
