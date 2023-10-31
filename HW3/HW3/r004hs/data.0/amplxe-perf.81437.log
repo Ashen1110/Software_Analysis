@@ -1,0 +1,14 @@
+Using CPUID GenuineIntel-6-A7-1
+DEBUGINFOD_URLS=
+Compression enabled, disabling build id collection at the end of the session.
+nr_cblocks: 0
+affinity: SYS
+mmap flush: 1
+comp level: 1
+mmap size 528384B
+Control descriptor is not initialized
+
+81444:perf-sync:ready:TSC=997019073747159
+[ perf record: Woken up 1 times to write data ]
+failed to write feature HYBRID_TOPOLOGY
+[ perf record: Captured and wrote 0.029 MB /home/ashen/Documents/Software_Analysis-git/HW3/HW3/r004hs/data.0/temp.dryrun.perf, compressed (original 0.004 MB, ratio is 3.551) ]

@@ -1,0 +1,63 @@
+threads_spec: cpu
+Using CPUID GenuineIntel-6-A7-1
+DEBUGINFOD_URLS=
+Compression enabled, disabling build id collection at the end of the session.
+nr_threads: 12
+thread_masks[0]: 0x560cdca29d00: maps mask[12]: 0
+thread_masks[0]: 0x560cdca29d10: affinity mask[12]: 0
+thread_masks[1]: 0x560cdca29d20: maps mask[12]: 1
+thread_masks[1]: 0x560cdca29d30: affinity mask[12]: 1
+thread_masks[2]: 0x560cdca29d40: maps mask[12]: 2
+thread_masks[2]: 0x560cdca29d50: affinity mask[12]: 2
+thread_masks[3]: 0x560cdca29d60: maps mask[12]: 3
+thread_masks[3]: 0x560cdca29d70: affinity mask[12]: 3
+thread_masks[4]: 0x560cdca29d80: maps mask[12]: 4
+thread_masks[4]: 0x560cdca29d90: affinity mask[12]: 4
+thread_masks[5]: 0x560cdca29da0: maps mask[12]: 5
+thread_masks[5]: 0x560cdca29db0: affinity mask[12]: 5
+thread_masks[6]: 0x560cdca29dc0: maps mask[12]: 6
+thread_masks[6]: 0x560cdca29dd0: affinity mask[12]: 6
+thread_masks[7]: 0x560cdca29de0: maps mask[12]: 7
+thread_masks[7]: 0x560cdca29df0: affinity mask[12]: 7
+thread_masks[8]: 0x560cdca29e00: maps mask[12]: 8
+thread_masks[8]: 0x560cdca29e10: affinity mask[12]: 8
+thread_masks[9]: 0x560cdca29e20: maps mask[12]: 9
+thread_masks[9]: 0x560cdca29e30: affinity mask[12]: 9
+thread_masks[10]: 0x560cdca29e40: maps mask[12]: 10
+thread_masks[10]: 0x560cdca29e50: affinity mask[12]: 10
+thread_masks[11]: 0x560cdca29e60: maps mask[12]: 11
+thread_masks[11]: 0x560cdca29e70: affinity mask[12]: 11
+nr_cblocks: 0
+affinity: SYS
+mmap flush: 1
+comp level: 1
+mmap size 528384B
+threads[80543]: started on cpu1
+threads[80544]: started on cpu2
+threads[80545]: started on cpu3
+threads[80546]: started on cpu4
+threads[80547]: started on cpu5
+threads[80548]: started on cpu6
+threads[80549]: started on cpu7
+threads[80550]: started on cpu8
+threads[80551]: started on cpu9
+threads[80552]: started on cpu10
+threads[80553]: started on cpu11
+threads[80541]: started on cpu0
+
+80542:perf-sync:ready:TSC=994693569489262
+[ perf record: Woken up 1174 times to write data ]
+threads[80541]: samples=0, wakes=98, written=0
+threads[80543]: samples=0, wakes=120, written=0
+threads[80544]: samples=0, wakes=98, written=0
+threads[80545]: samples=0, wakes=99, written=0
+threads[80546]: samples=0, wakes=122, written=0
+threads[80547]: samples=0, wakes=115, written=0
+threads[80548]: samples=1, wakes=70, transferred=336, compressed=116
+threads[80549]: samples=7, wakes=5, transferred=1135424, compressed=102807
+threads[80550]: samples=0, wakes=97, written=0
+threads[80551]: samples=0, wakes=101, written=0
+threads[80552]: samples=0, wakes=120, written=0
+threads[80553]: samples=0, wakes=130, written=0
+failed to write feature HYBRID_TOPOLOGY
+[ perf record: Captured and wrote 0.152 MB /home/ashen/Documents/Software_Analysis-git/HW3/HW3/r001hs/data.0/80534.perf, compressed (original 1.083 MB, ratio is 11.035) ]
