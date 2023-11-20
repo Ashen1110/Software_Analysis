@@ -1,0 +1,310 @@
+Flat profile:
+
+Each sample counts as 0.01 seconds.
+  %   cumulative   self              self     total           
+ time   seconds   seconds    calls  ms/call  ms/call  name    
+ 68.18      0.15     0.15        1   150.00   219.96  deflate
+ 13.64      0.18     0.03 16768796     0.00     0.00  ct_tally
+  9.09      0.20     0.02 10546671     0.00     0.00  longest_match
+  4.55      0.21     0.01   274868     0.00     0.00  pqdownheap.constprop.0
+  4.55      0.22     0.01      512     0.02     0.02  copy_block
+  0.00      0.22     0.00   139288     0.00     0.00  bi_reverse
+  0.00      0.22     0.00     1536     0.00     0.01  build_tree
+  0.00      0.22     0.00     1025     0.00     0.00  flush_outbuf
+  0.00      0.22     0.00     1024     0.00     0.00  scan_tree
+  0.00      0.22     0.00      513     0.00     0.00  bi_windup
+  0.00      0.22     0.00      513     0.00     0.00  file_read
+  0.00      0.22     0.00      513     0.00     0.00  read_buffer
+  0.00      0.22     0.00      513     0.00     0.00  updcrc
+  0.00      0.22     0.00      512     0.00     0.00  fill_window
+  0.00      0.22     0.00      512     0.00     0.04  flush_block
+  0.00      0.22     0.00      512     0.00     0.00  send_bits
+  0.00      0.22     0.00        2     0.00     0.00  atdir_set
+  0.00      0.22     0.00        2     0.00     0.00  gzip_base_name
+  0.00      0.22     0.00        2     0.00     0.00  strlwr
+  0.00      0.22     0.00        1     0.00     0.00  add_envopt
+  0.00      0.22     0.00        1     0.00     0.00  bi_init
+  0.00      0.22     0.00        1     0.00     0.00  clear_bufs
+  0.00      0.22     0.00        1     0.00     0.00  ct_init
+  0.00      0.22     0.00        1     0.00     0.00  do_exit
+  0.00      0.22     0.00        1     0.00     0.00  get_suffix
+  0.00      0.22     0.00        1     0.00     0.00  lm_init
+  0.00      0.22     0.00        1     0.00     0.00  open_and_stat.constprop.0
+  0.00      0.22     0.00        1     0.00   220.00  treat_stdin
+  0.00      0.22     0.00        1     0.00   220.00  zip
+
+ %         the percentage of the total running time of the
+time       program used by this function.
+
+cumulative a running sum of the number of seconds accounted
+ seconds   for by this function and those listed above it.
+
+ self      the number of seconds accounted for by this
+seconds    function alone.  This is the major sort for this
+           listing.
+
+calls      the number of times this function was invoked, if
+           this function is profiled, else blank.
+
+ self      the average number of milliseconds spent in this
+ms/call    function per call, if this function is profiled,
+	   else blank.
+
+ total     the average number of milliseconds spent in this
+ms/call    function and its descendents per call, if this
+	   function is profiled, else blank.
+
+name       the name of the function.  This is the minor sort
+           for this listing. The index shows the location of
+	   the function in the gprof listing. If the index is
+	   in parenthesis it shows where it would appear in
+	   the gprof listing if it were to be printed.
+
+Copyright (C) 2012-2022 Free Software Foundation, Inc.
+
+Copying and distribution of this file, with or without modification,
+are permitted in any medium without royalty provided the copyright
+notice and this notice are preserved.
+
+		     Call graph (explanation follows)
+
+
+granularity: each sample hit covers 4 byte(s) for 4.55% of 0.22 seconds
+
+index % time    self  children    called     name
+                0.00    0.22       1/1           main [3]
+[1]    100.0    0.00    0.22       1         treat_stdin [1]
+                0.00    0.22       1/1           zip [2]
+                0.00    0.00       1/1           open_and_stat.constprop.0 [30]
+                0.00    0.00       1/1           get_suffix [28]
+                0.00    0.00       1/1           clear_bufs [25]
+                0.00    0.00       1/2           atdir_set [20]
+-----------------------------------------------
+                0.00    0.22       1/1           treat_stdin [1]
+[2]    100.0    0.00    0.22       1         zip [2]
+                0.15    0.07       1/1           deflate [4]
+                0.00    0.00       1/512         flush_block [7]
+                0.00    0.00       1/513         updcrc [17]
+                0.00    0.00       1/1           bi_init [24]
+                0.00    0.00       1/1           ct_init [26]
+                0.00    0.00       1/1           lm_init [29]
+                0.00    0.00       1/2           gzip_base_name [21]
+                0.00    0.00       1/1025        flush_outbuf [12]
+-----------------------------------------------
+                                                 <spontaneous>
+[3]    100.0    0.00    0.22                 main [3]
+                0.00    0.22       1/1           treat_stdin [1]
+                0.00    0.00       1/2           gzip_base_name [21]
+                0.00    0.00       1/1           add_envopt [23]
+                0.00    0.00       1/1           do_exit [27]
+-----------------------------------------------
+                0.15    0.07       1/1           zip [2]
+[4]    100.0    0.15    0.07       1         deflate [4]
+                0.03    0.00 16768796/16768796     ct_tally [5]
+                0.02    0.00 10546671/10546671     longest_match [6]
+                0.00    0.02     511/512         flush_block [7]
+                0.00    0.00     512/512         fill_window [18]
+-----------------------------------------------
+                0.03    0.00 16768796/16768796     deflate [4]
+[5]     13.6    0.03    0.00 16768796         ct_tally [5]
+-----------------------------------------------
+                0.02    0.00 10546671/10546671     deflate [4]
+[6]      9.1    0.02    0.00 10546671         longest_match [6]
+-----------------------------------------------
+                0.00    0.00       1/512         zip [2]
+                0.00    0.02     511/512         deflate [4]
+[7]      9.1    0.00    0.02     512         flush_block [7]
+                0.00    0.01    1536/1536        build_tree [9]
+                0.01    0.00     512/512         copy_block [10]
+                0.00    0.00    1024/1024        scan_tree [13]
+                0.00    0.00     512/512         send_bits [19]
+                0.00    0.00       1/513         bi_windup [14]
+-----------------------------------------------
+                0.01    0.00  274868/274868      build_tree [9]
+[8]      4.5    0.01    0.00  274868         pqdownheap.constprop.0 [8]
+-----------------------------------------------
+                0.00    0.01    1536/1536        flush_block [7]
+[9]      4.5    0.00    0.01    1536         build_tree [9]
+                0.01    0.00  274868/274868      pqdownheap.constprop.0 [8]
+                0.00    0.00  138970/139288      bi_reverse [11]
+-----------------------------------------------
+                0.01    0.00     512/512         flush_block [7]
+[10]     4.5    0.01    0.00     512         copy_block [10]
+                0.00    0.00    1024/1025        flush_outbuf [12]
+                0.00    0.00     512/513         bi_windup [14]
+-----------------------------------------------
+                0.00    0.00     318/139288      ct_init [26]
+                0.00    0.00  138970/139288      build_tree [9]
+[11]     0.0    0.00    0.00  139288         bi_reverse [11]
+-----------------------------------------------
+                0.00    0.00       1/1025        zip [2]
+                0.00    0.00    1024/1025        copy_block [10]
+[12]     0.0    0.00    0.00    1025         flush_outbuf [12]
+-----------------------------------------------
+                0.00    0.00    1024/1024        flush_block [7]
+[13]     0.0    0.00    0.00    1024         scan_tree [13]
+-----------------------------------------------
+                0.00    0.00       1/513         flush_block [7]
+                0.00    0.00     512/513         copy_block [10]
+[14]     0.0    0.00    0.00     513         bi_windup [14]
+-----------------------------------------------
+                0.00    0.00       1/513         lm_init [29]
+                0.00    0.00     512/513         fill_window [18]
+[15]     0.0    0.00    0.00     513         file_read [15]
+                0.00    0.00     513/513         read_buffer [16]
+                0.00    0.00     512/513         updcrc [17]
+-----------------------------------------------
+                0.00    0.00     513/513         file_read [15]
+[16]     0.0    0.00    0.00     513         read_buffer [16]
+-----------------------------------------------
+                0.00    0.00       1/513         zip [2]
+                0.00    0.00     512/513         file_read [15]
+[17]     0.0    0.00    0.00     513         updcrc [17]
+-----------------------------------------------
+                0.00    0.00     512/512         deflate [4]
+[18]     0.0    0.00    0.00     512         fill_window [18]
+                0.00    0.00     512/513         file_read [15]
+-----------------------------------------------
+                0.00    0.00     512/512         flush_block [7]
+[19]     0.0    0.00    0.00     512         send_bits [19]
+-----------------------------------------------
+                0.00    0.00       1/2           open_and_stat.constprop.0 [30]
+                0.00    0.00       1/2           treat_stdin [1]
+[20]     0.0    0.00    0.00       2         atdir_set [20]
+-----------------------------------------------
+                0.00    0.00       1/2           main [3]
+                0.00    0.00       1/2           zip [2]
+[21]     0.0    0.00    0.00       2         gzip_base_name [21]
+-----------------------------------------------
+                0.00    0.00       2/2           get_suffix [28]
+[22]     0.0    0.00    0.00       2         strlwr [22]
+-----------------------------------------------
+                0.00    0.00       1/1           main [3]
+[23]     0.0    0.00    0.00       1         add_envopt [23]
+-----------------------------------------------
+                0.00    0.00       1/1           zip [2]
+[24]     0.0    0.00    0.00       1         bi_init [24]
+-----------------------------------------------
+                0.00    0.00       1/1           treat_stdin [1]
+[25]     0.0    0.00    0.00       1         clear_bufs [25]
+-----------------------------------------------
+                0.00    0.00       1/1           zip [2]
+[26]     0.0    0.00    0.00       1         ct_init [26]
+                0.00    0.00     318/139288      bi_reverse [11]
+-----------------------------------------------
+                0.00    0.00       1/1           main [3]
+[27]     0.0    0.00    0.00       1         do_exit [27]
+-----------------------------------------------
+                0.00    0.00       1/1           treat_stdin [1]
+[28]     0.0    0.00    0.00       1         get_suffix [28]
+                0.00    0.00       2/2           strlwr [22]
+-----------------------------------------------
+                0.00    0.00       1/1           zip [2]
+[29]     0.0    0.00    0.00       1         lm_init [29]
+                0.00    0.00       1/513         file_read [15]
+-----------------------------------------------
+                0.00    0.00       1/1           treat_stdin [1]
+[30]     0.0    0.00    0.00       1         open_and_stat.constprop.0 [30]
+                0.00    0.00       1/2           atdir_set [20]
+-----------------------------------------------
+
+ This table describes the call tree of the program, and was sorted by
+ the total amount of time spent in each function and its children.
+
+ Each entry in this table consists of several lines.  The line with the
+ index number at the left hand margin lists the current function.
+ The lines above it list the functions that called this function,
+ and the lines below it list the functions this one called.
+ This line lists:
+     index	A unique number given to each element of the table.
+		Index numbers are sorted numerically.
+		The index number is printed next to every function name so
+		it is easier to look up where the function is in the table.
+
+     % time	This is the percentage of the `total' time that was spent
+		in this function and its children.  Note that due to
+		different viewpoints, functions excluded by options, etc,
+		these numbers will NOT add up to 100%.
+
+     self	This is the total amount of time spent in this function.
+
+     children	This is the total amount of time propagated into this
+		function by its children.
+
+     called	This is the number of times the function was called.
+		If the function called itself recursively, the number
+		only includes non-recursive calls, and is followed by
+		a `+' and the number of recursive calls.
+
+     name	The name of the current function.  The index number is
+		printed after it.  If the function is a member of a
+		cycle, the cycle number is printed between the
+		function's name and the index number.
+
+
+ For the function's parents, the fields have the following meanings:
+
+     self	This is the amount of time that was propagated directly
+		from the function into this parent.
+
+     children	This is the amount of time that was propagated from
+		the function's children into this parent.
+
+     called	This is the number of times this parent called the
+		function `/' the total number of times the function
+		was called.  Recursive calls to the function are not
+		included in the number after the `/'.
+
+     name	This is the name of the parent.  The parent's index
+		number is printed after it.  If the parent is a
+		member of a cycle, the cycle number is printed between
+		the name and the index number.
+
+ If the parents of the function cannot be determined, the word
+ `<spontaneous>' is printed in the `name' field, and all the other
+ fields are blank.
+
+ For the function's children, the fields have the following meanings:
+
+     self	This is the amount of time that was propagated directly
+		from the child into the function.
+
+     children	This is the amount of time that was propagated from the
+		child's children to the function.
+
+     called	This is the number of times the function called
+		this child `/' the total number of times the child
+		was called.  Recursive calls by the child are not
+		listed in the number after the `/'.
+
+     name	This is the name of the child.  The child's index
+		number is printed after it.  If the child is a
+		member of a cycle, the cycle number is printed
+		between the name and the index number.
+
+ If there are any cycles (circles) in the call graph, there is an
+ entry for the cycle-as-a-whole.  This entry shows who called the
+ cycle (as parents) and the members of the cycle (as children.)
+ The `+' recursive calls entry shows the number of function calls that
+ were internal to the cycle, and the calls entry for each member shows,
+ for that member, how many times it was called from other members of
+ the cycle.
+
+Copyright (C) 2012-2022 Free Software Foundation, Inc.
+
+Copying and distribution of this file, with or without modification,
+are permitted in any medium without royalty provided the copyright
+notice and this notice are preserved.
+
+Index by function name
+
+  [23] add_envopt              [4] deflate                [30] open_and_stat.constprop.0 (gzip.c)
+  [20] atdir_set (gzip.c)     [27] do_exit (gzip.c)        [8] pqdownheap.constprop.0 (trees.c)
+  [24] bi_init                [15] file_read              [16] read_buffer
+  [11] bi_reverse             [18] fill_window (deflate.c) [13] scan_tree (trees.c)
+  [14] bi_windup               [7] flush_block            [19] send_bits
+   [9] build_tree (trees.c)   [12] flush_outbuf           [22] strlwr
+  [25] clear_bufs             [28] get_suffix (gzip.c)     [1] treat_stdin (gzip.c)
+  [10] copy_block             [21] gzip_base_name         [17] updcrc
+  [26] ct_init                [29] lm_init                 [2] zip
+   [5] ct_tally                [6] longest_match (deflate.c)

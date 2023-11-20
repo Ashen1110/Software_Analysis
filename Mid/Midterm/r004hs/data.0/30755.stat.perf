@@ -1,0 +1,33 @@
+# AMPLXE_PERF_STAT
+# hostname : Stephanie-Lin
+# os release : 6.2.0-36-generic
+# arch : x86_64
+# cpuid : GenuineIntel,6,167,1
+# cpudesc : 11th Gen Intel(R) Core(TM) i5-11500 @ 2.70GHz
+# total memory : 32619180 kB
+# nrcpus online : 12
+# nrcpus avail : 12
+# sibling cores : 0-11
+# sibling threads : 0,6
+# sibling threads : 1,7
+# sibling threads : 2,8
+# sibling threads : 3,9
+# sibling threads : 4,10
+# sibling threads : 5,11
+# process id : 30755
+;;2679601329;0
+;;1658126179;1
+;;6805263684;2
+;;2535810596;3
+;;10157887;4
+;;121736188;5
+;;0;6
+;;0;7
+;;0;8
+;;836576596;9
+;;0;10
+;;7898745363;11
+;;7832003338;12
+;;0;13
+;;0;14
+;;12733788955;15
