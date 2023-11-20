@@ -1,0 +1,200 @@
+Intel(R) Advisor can now assist with vectorization and show optimization
+  report messages with your source code.
+See "https://software.intel.com/en-us/intel-advisor-xe" for details.
+
+
+    Report from: Interprocedural optimizations [ipo]
+
+INLINING OPTION VALUES:
+  -inline-factor: 100
+  -inline-min-size: 30
+  -inline-max-size: 230
+  -inline-max-total-size: 2000
+  -inline-max-per-routine: 10000
+  -inline-max-per-compile: 500000
+
+
+Begin optimization report for: main()
+
+    Report from: Interprocedural optimizations [ipo]
+
+INLINE REPORT: (main()) [1] nsieve.c(152,1)
+  -> (189,1) SIEVE()
+  -> (222,1) SIEVE()
+  -> (235,4) SIEVE()
+
+
+    Report from: Loop nest, Vector & Auto-parallelization optimizations [loop, vec, par]
+
+
+LOOP BEGIN at nsieve.c(191,1)
+   remark #15335: loop was not vectorized: vectorization possible but seems inefficient. Use vector always directive or -vec-threshold0 to override 
+   remark #25438: unrolled without remainder by 2  
+LOOP END
+
+LOOP BEGIN at nsieve.c(264,1)
+   remark #25084: Preprocess Loopnests: Moving Out Store    [ nsieve.c(266,1) ]
+   remark #25084: Preprocess Loopnests: Moving Out Store    [ nsieve.c(267,1) ]
+   remark #15335: loop was not vectorized: vectorization possible but seems inefficient. Use vector always directive or -vec-threshold0 to override 
+   remark #25439: unrolled with remainder by 8  
+LOOP END
+
+LOOP BEGIN at nsieve.c(264,1)
+<Remainder>
+   remark #25436: completely unrolled by 7  
+LOOP END
+
+
+Non-optimizable loops:
+
+
+LOOP BEGIN at nsieve.c(229,1)
+   remark #15543: loop was not vectorized: loop with function call not considered an optimization candidate.
+LOOP END
+
+    Report from: Code generation optimizations [cg]
+
+nsieve.c(152,1):remark #34051: REGISTER ALLOCATION : [main] nsieve.c:152
+
+    Hardware registers
+        Reserved     :    2[ rsp rip]
+        Available    :   39[ rax rdx rcx rbx rbp rsi rdi r8-r15 mm0-mm7 zmm0-zmm15]
+        Callee-save  :    6[ rbx rbp r12-r15]
+        Assigned     :   27[ rax rdx rcx rbx rsi rdi r8-r10 r13 r15 zmm0-zmm15]
+        
+    Routine temporaries
+        Total         :     137
+            Global    :      25
+            Local     :     112
+        Regenerable   :      48
+        Spilled       :       7
+        
+    Routine stack
+        Variables     :       4 bytes*
+            Reads     :       2 [5.02e-01 ~ 0.5%]
+            Writes    :       2 [5.02e-01 ~ 0.5%]
+        Spills        :      24 bytes*
+            Reads     :      20 [2.42e+00 ~ 2.4%]
+            Writes    :      20 [2.42e+00 ~ 2.4%]
+    
+    Notes
+    
+        *Non-overlapping variables and spills may share stack space,
+         so the total stack size might be less than this.
+    
+
+===========================================================================
+
+Begin optimization report for: SIEVE()
+
+    Report from: Interprocedural optimizations [ipo]
+
+INLINE REPORT: (SIEVE()) [2] nsieve.c(284,1)
+  -> INLINE: (314,4) dtime()
+  -> INLINE: (315,4) dtime()
+  -> INLINE: (324,4) dtime()
+  -> INLINE: (353,4) dtime()
+
+
+    Report from: Loop nest, Vector & Auto-parallelization optimizations [loop, vec, par]
+
+
+LOOP BEGIN at nsieve.c(325,4)
+   remark #15542: loop was not vectorized: inner loop was already vectorized
+
+   LOOP BEGIN at nsieve.c(329,4)
+      remark #25408: memset generated
+      remark #15542: loop was not vectorized: inner loop was already vectorized
+
+      LOOP BEGIN at nsieve.c(329,4)
+         remark #15300: LOOP WAS VECTORIZED
+      LOOP END
+
+      LOOP BEGIN at nsieve.c(329,4)
+      <Remainder loop for vectorization>
+      LOOP END
+   LOOP END
+
+   LOOP BEGIN at nsieve.c(335,6)
+      remark #15541: outer loop was not auto-vectorized: consider using SIMD directive
+
+      LOOP BEGIN at nsieve.c(341,2)
+         remark #15335: loop was not vectorized: vectorization possible but seems inefficient. Use vector always directive or -vec-threshold0 to override 
+         remark #25456: Number of Array Refs Scalar Replaced In Loop: 1
+      LOOP END
+   LOOP END
+LOOP END
+
+    Report from: Code generation optimizations [cg]
+
+nsieve.c(329,4):remark #34026: call to memset implemented as a call to optimized library version
+nsieve.c(284,1):remark #34051: REGISTER ALLOCATION : [SIEVE] nsieve.c:284
+
+    Hardware registers
+        Reserved     :    2[ rsp rip]
+        Available    :   39[ rax rdx rcx rbx rbp rsi rdi r8-r15 mm0-mm7 zmm0-zmm15]
+        Callee-save  :    6[ rbx rbp r12-r15]
+        Assigned     :   20[ rax rdx rcx rbx rbp rsi rdi r8-r15 zmm0-zmm4]
+        
+    Routine temporaries
+        Total         :     114
+            Global    :      42
+            Local     :      72
+        Regenerable   :      22
+        Spilled       :      20
+        
+    Routine stack
+        Variables     :       0 bytes*
+            Reads     :       0 [0.00e+00 ~ 0.0%]
+            Writes    :       0 [0.00e+00 ~ 0.0%]
+        Spills        :     112 bytes*
+            Reads     :      20 [3.24e+00 ~ 3.2%]
+            Writes    :      15 [2.08e+00 ~ 2.1%]
+    
+    Notes
+    
+        *Non-overlapping variables and spills may share stack space,
+         so the total stack size might be less than this.
+    
+
+===========================================================================
+
+Begin optimization report for: dtime()
+
+    Report from: Interprocedural optimizations [ipo]
+
+INLINE REPORT: (dtime()) [3] nsieve.c(456,1)
+
+
+    Report from: Code generation optimizations [cg]
+
+nsieve.c(456,1):remark #34051: REGISTER ALLOCATION : [dtime] nsieve.c:456
+
+    Hardware registers
+        Reserved     :    2[ rsp rip]
+        Available    :   39[ rax rdx rcx rbx rbp rsi rdi r8-r15 mm0-mm7 zmm0-zmm15]
+        Callee-save  :    6[ rbx rbp r12-r15]
+        Assigned     :    6[ rax rsi rdi r12 zmm0-zmm1]
+        
+    Routine temporaries
+        Total         :      18
+            Global    :       8
+            Local     :      10
+        Regenerable   :       4
+        Spilled       :       2
+        
+    Routine stack
+        Variables     :       0 bytes*
+            Reads     :       0 [0.00e+00 ~ 0.0%]
+            Writes    :       0 [0.00e+00 ~ 0.0%]
+        Spills        :       8 bytes*
+            Reads     :       1 [3.12e+00 ~ 3.1%]
+            Writes    :       1 [3.12e+00 ~ 3.1%]
+    
+    Notes
+    
+        *Non-overlapping variables and spills may share stack space,
+         so the total stack size might be less than this.
+    
+
+===========================================================================
